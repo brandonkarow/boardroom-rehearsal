@@ -2,7 +2,7 @@
 
 Built on 2026-11-10 by Brandon with Claude as the coding agent (Claude Cowork). Exported from the session transcript.
 
-**Format:** every message from Brandon and every reply from the agent, in order. Each of the 269 tool actions (file edits, test runs, browser checks) is one 🔧 line, with test results where a test ran. Tool outputs and the agent's private reasoning are left out for length, and personal memory lookups for privacy. Decisions and corrections are summarized in BUILD_LOG.md.
+**Format:** every message from Brandon and every reply from the agent, in order. Each of the 297 tool actions (file edits, test runs, browser checks) is one 🔧 line, with test results where a test ran. Tool outputs and the agent's private reasoning are left out for length, and personal memory lookups for privacy. Decisions and corrections are summarized in BUILD_LOG.md.
 
 
 ---
@@ -1613,4 +1613,219 @@ The sample answer is pre-filled on card 1, and the mode is Live. Submitting:
 - 🔧 **Bash** Inspect the transcript JSONL structure
 - 🔧 **Bash** Export the transcript to Markdown and screen it for private data
 - 🔧 **Bash** Check the user-message list and an attachment turn
-- 🔧 **Bash** Update README, log, commit, refresh chat history, build final zip
+- 🔧 **Bash** Update README, log, commit, refresh chat history, build final zip → `139 passed in 6.73s`
+- 🔧 **SendUserFile** 
+
+**🤖 Claude · 1:15 PM**
+
+Grill Me is live and saved into the demo, and I built the chat history myself, so you don't need to find the export. Everything is in `boardroom-rehearsal-final.zip` above, and all 139 tests pass.
+
+**Grill Me, live:** I ran one real exchange on your deployed app using the sample answer ("about 18 months of runway…"). It took 12 seconds:
+- **Code flagged the wrong figure first:** "You said 18 months; the pack shows runway of 17 months in Q3 2026."
+- **The investor pressed on exactly that:** "You said 18 months. The pack says 17. Which is it? And 'Q2 next year' isn't a date. Give me the day you start the Series D process…"
+- **Coaching scores:** clarity 3/5, use of data 2/5, root cause 2/5. The reasons were specific, and every figure in them checked out against the pack.
+
+This exchange is now in the demo cache, so reviewers see it instantly with no API key.
+
+**Chat history:** I found this session's full transcript in my workspace and turned it into `agent_chat_history.md` (attached, and also in the repo). It has all 24 of your messages and every reply, in order. Each of the 267 actions (file edits, test runs, browser checks) is one line, with test results where tests ran. I left out tool outputs and my private reasoning for length. I also left out memory lookups for privacy, and checked the file for email addresses, other interviews, keys and tokens. It ends just before this message.
+
+**Upload:** Extract All on `boardroom-rehearsal-final.zip`, Ctrl+A, drag into GitHub, and commit `Final: Grill me demo and chat history`.
+
+After that, these are left for you:
+1. **Read the two README sections I wrote in your voice** (*The problem*, *Path to Floyd*) and change anything that doesn't sound like you.
+2. **Record the Loom** from **Boardroom Rehearsal: Loom script and cover email**. The Grill Me moment is at 1:45–2:15.
+3. **Send the email** from the same doc. Attach `agent_chat_history.md` and `boardroom_rehearsal_prompts.zip`, and paste in the Loom link.
+
+When you've uploaded, I can do a final check of the live app, including Grill Me in instant demo mode.
+
+
+---
+
+### 🧑 Brandon · 1:18 PM
+
+Please help me understand what I need to do with Loom?
+
+- 🔧 **WebSearch** Loom free Starter plan recording length limit 2026 desktop app Windows record screen and camera share link
+- 🔧 **WebFetch** https://dupple.com/learn/is-loom-free
+
+**🤖 Claude · 1:18 PM**
+
+Loom is a free screen recorder. You record your screen and your face at the same time, and Loom gives you a link to share. For this take-home, it's the 3-minute video where you show the app working and explain your thinking. You'll put the link in your email to Kiran. Here's the whole process, about 30–45 minutes including practice.
+
+**1. Sign up and install (about 5 minutes)**
+- Go to https://www.loom.com and sign up for free. The free plan allows videos up to 5 minutes, so a 3-minute video fits. Use whatever sign-in suits you; I don't need any details.
+- Install the Windows desktop app from https://www.loom.com/products/windows-screen-recorder. It's more reliable than the browser extension for screen and camera together.
+- When Windows asks, allow Loom to use your camera, microphone and screen.
+
+**2. Set up your screen before recording**
+
+Open the Loom script and cover email doc (it's open next to this chat) and follow its checklist:
+- Open the app in Edge, zoomed to 125%, with **Instant demo** selected.
+- Do one practice run first (Load → Rehearse → open card 1 → Grill me), so everything is warmed up and appears instantly.
+- Open two more tabs: the GitHub repo's `CLAUDE.md` and `BUILD_LOG.md`, and `README.md` at *Path to Floyd*.
+- Close anything private, such as email or other tabs.
+
+**3. Record**
+- Open Loom and choose **Screen + Camera**. Pick the Edge window or your full screen, and turn on the camera bubble; they're hiring a GM, so they should see you.
+- Click **Start Recording** and follow the timed script in the doc: about 2:15 in the app, then 45 seconds on how you built it and the Floyd vision.
+- Click **Stop** when you're done. Loom uploads the video and opens it in your browser.
+
+Plan on 2–3 takes. Read the script once with a timer first, and cut words, never demo steps. If you stumble, it's usually faster to re-record than to edit. Keep the best take under 3:00.
+
+**4. Share**
+- On the video page, click **Share** and set access to **Anyone with the link**.
+- Copy the link and paste it into the email in the doc, where it says **[link]**.
+- Open the link in an InPrivate window (Ctrl+Shift+N) to check it plays for someone who isn't logged in.
+
+If anything in Loom looks different from what I've described (its menus change), tell me what you see and I'll walk you through it. And once you've uploaded the final zip to GitHub, I can do one last check of the live app before you record.
+
+Sources: [Loom Windows screen recorder](https://www.loom.com/products/windows-screen-recorder) · [Is Loom Free? Starter Limits](https://dupple.com/learn/is-loom-free)
+
+
+---
+
+### 🧑 Brandon · 5:04 PM
+
+Please provide a scripted walkthrough of the tool, how it works, how it was built, etc.  I will need show it working end-to-end, describe the problem, the process used to build and solve it.  There are 2 asks in this one:  1- a script for the 3 minute Loom video that will record my face and screen, and 2- structure and script for the 90 min working session to be had with the hiring manager as a next step.
+
+
+**🤖 Claude · 5:04 PM**
+
+Before writing, I'll read the "90-min session prep" tab already in your plan doc, so the new session script builds on it rather than contradicting it.
+
+- 🔧 **Docs: read** 
+- 🔧 **Docs: guide** 
+- 🔧 **Docs: update** 
+
+**🤖 Claude · 5:05 PM**
+
+The Loom script is tightened. Now the 90-minute session tab, starting with its outline:
+
+- 🔧 **Docs: batch** 
+
+**🤖 Claude · 5:05 PM**
+
+Outline is up in the new tab. Now the agenda:
+
+- 🔧 **Docs: update** 
+
+**🤖 Claude · 5:06 PM**
+
+Now the opening and the problem talk track:
+
+- 🔧 **Docs: update** 
+
+**🤖 Claude · 5:06 PM**
+
+Now the live demo script:
+
+- 🔧 **Docs: update** 
+
+**🤖 Claude · 5:06 PM**
+
+Before writing the build story, let me pull exact timestamps from the chat history, so you can jump to the real moments on screen:
+
+- 🔧 **Bash** Find timestamps of key moments in the chat history
+- 🔧 **Docs: update** 
+
+**🤖 Claude · 5:07 PM**
+
+Next, under the hood:
+
+- 🔧 **Docs: update** 
+
+**🤖 Claude · 5:07 PM**
+
+Now the Path to Floyd conversation:
+
+- 🔧 **Docs: update** 
+- 🔧 **Docs: update** 
+
+**🤖 Claude · 5:08 PM**
+
+Now the likely questions with answers grounded in what was actually built:
+
+- 🔧 **Docs: update** 
+
+**🤖 Claude · 5:08 PM**
+
+Last section: questions to ask, the close, and a day-before checklist.
+
+- 🔧 **Docs: update** 
+
+**🤖 Claude · 5:08 PM**
+
+The script mentions `messy_board_pack.csv`, so I'll make it and confirm it does exactly what the demo script claims:
+
+- 🔧 **Bash** Create the messy demo CSV and confirm how the app reads it
+- 🔧 **SendUserFile** 
+
+**🤖 Claude · 5:08 PM**
+
+Both are ready in **Boardroom Rehearsal: Loom script and cover email**: the main tab has the tightened Loom script, and the new **90-minute session** tab has the session plan. Both are in your voice, and every number and story in them comes from the actual build.
+
+**1. The 3-minute Loom script.** It now runs in four parts, each with the screen, the clicks and what you say:
+- **The problem (0:25):** the question a CFO didn't see coming.
+- **The product end to end (1:55):** signals, then the hard 10, then how peers handled it, then Grill me catching "about 18 months", then the brief.
+- **How you built it (0:25):** the spec rule that the AI never calculates, and the true-numbers-false-claim catch.
+- **Why it matters for Floyd (0:15).**
+
+It's about 450 words, a natural pace for 3 minutes.
+
+**2. The 90-minute session:**
+- **Agenda and opening.** A word-for-word opening, then the problem talk track, drawing on your Gartner and Evanta peer-connect work.
+- **A 15-minute live demo.** It runs on two app tabs. Start a live run in the second tab at minute 8, so it's ready when you reach it. Kiran can type her own answer into Grill me. You can also break it on purpose with the messy CSV.
+- **How it was built.** Five beats from the build log, the moment you pushed back on skipping Grill me, and an honest split of who did what. There's also a table of 11 chat-history timestamps to show on screen.
+- **Under the hood.** The run explained step by step, how each guarantee is proven, real speed figures, and the limits, stated before they ask.
+- **Path to Floyd.** A conversation opener, a roadmap with a checkpoint before each step, go-to-market, what you'd measure, and your first 90 days as GM.
+- **Likely questions and the close.** 14 likely questions with answers, your questions to ask, the close, a day-before checklist, and backups.
+
+**Two things to know:**
+- **Don't edit the deployed repo during the session.** If someone asks "what if the board were stricter?", explain the `signals.yaml` change and offer to send it afterwards. A live edit would break instant demo for everyone, because the saved run is tied to today's exact signals.
+- **The cost figure is my estimate (30–50 cents per live run).** Check the real number in the Claude Console under Usage before the session, and quote that.
+
+**The messy CSV** (attached) reads correctly despite the "$48.00M" and "72.8%" formatting, and it flags the 1,090% NRR as a data error. The NRR signal also disappears because of the typo, which is a good line: "that's why the data warning comes first."
+
+**Still pending:** please upload `boardroom-rehearsal-final.zip` from my previous message. It adds the saved Grill Me exchange and `agent_chat_history.md` to the live app and repo. Then reply "uploaded" and I'll do the final live check.
+
+
+---
+
+### 🧑 Brandon · 5:21 PM
+
+updated
+
+- 🔧 **Bash** Verify the final upload matches the local build → `139 passed in 6.98s`
+
+**🤖 Claude · 5:21 PM**
+
+Your repo matches the final build, and all 139 tests pass on a fresh copy. Final check of the live app, including Grill Me in instant demo:
+
+- 🔧 **Browser: browser_batch** 
+- 🔧 **Browser: javascript_tool** javascript_exec
+
+**🤖 Claude · 5:22 PM**
+
+The status box is also a collapsible section, so card 1 is the third one, not the second. My script picked the wrong one. Retrying on the right card:
+
+- 🔧 **Browser: javascript_tool** javascript_exec
+
+**🤖 Claude · 5:22 PM**
+
+Grill Me didn't respond within 20 seconds in demo mode. It should be instant there, so something is off. Looking at the card:
+
+- 🔧 **Browser: javascript_tool** javascript_exec
+
+**🤖 Claude · 5:22 PM**
+
+The card collapsed after the click, and the result is hidden inside it. Opening it to confirm the result is there:
+
+- 🔧 **Browser: javascript_tool** javascript_exec
+- 🔧 **Bash** Fix the collapsing card, test, log, refresh chat history, build zip → `1 failed, 138 passed in 6.65s`
+
+**🤖 Claude · 5:23 PM**
+
+I committed too soon: one test fails. Checking it before anything goes to you:
+
+- 🔧 **Bash** Show the failing test
+- 🔧 **Bash** Fix the fake form submit, rerun tests, rebuild zip

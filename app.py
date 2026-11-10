@@ -215,7 +215,9 @@ def render_grill(q) -> None:
     with st.form(key=f"grill_form_{q.rank}"):
         answer = st.text_area("Your answer", value=sample or "", height=130, key=f"grill_answer_{q.rank}",
                               help="Pre-filled with a sample answer written for the demo." if sample else None)
-        go = st.form_submit_button("Answer the board", type="primary")
+        # on_click runs before the page redraws, so this card stays open to show the result
+        go = st.form_submit_button("Answer the board", type="primary",
+                                   on_click=lambda r=q.rank: ss.__setitem__("open_card", r))
     if sample:
         st.caption("Pre-filled with a sample answer written for the demo, with one deliberate mistake. "
                    "Edit it or write your own.")

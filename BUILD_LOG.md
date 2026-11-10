@@ -382,3 +382,7 @@ back**. Read every card as a board member would. Found:
   tokens.
 - **Loom script and cover email** drafted in Brandon's voice in a separate doc.
 - 139 tests pass.
+- **Final live check found a UX bug:** in demo mode, Grill me replayed correctly (code check
+  plus the saved follow-up, 3/5, 2/5, 2/5), but clicking *Answer the board* collapsed the card,
+  hiding the result. The "keep this card open" flag was set during the run, after the card
+  was drawn. Moved it to the button's on_click callback, which runs before the redraw.

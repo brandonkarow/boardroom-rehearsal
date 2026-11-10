@@ -34,7 +34,16 @@ def fake_streamlit(buttons):
     st.button.side_effect = lambda label, **kw: buttons.get(label, False) and not kw.get("disabled")  # like Streamlit
     st.file_uploader.return_value = None
     st.text_area.side_effect = lambda label, value="", **kw: value          # like Streamlit
-    st.form_submit_button.side_effect = lambda label, **kw: buttons.get(label, False)
+    submitted = []
+
+    def submit(label, on_click=None, **kw):     # like Streamlit: one form per click; callback first
+        clicked = buttons.get(label, False) and not submitted
+        if clicked:
+            submitted.append(label)
+        if clicked and on_click:
+            on_click()
+        return clicked
+    st.form_submit_button.side_effect = submit
     st.columns.side_effect = lambda spec: [MagicMock() for _ in (spec if isinstance(spec, list) else range(spec))]
     st.sidebar = MagicMock()
     return st
@@ -91,5 +100,6 @@ def test_grill_me_demo_replays_the_saved_exchange(monkeypatch):
     grilled = {k: v for k, v in st.session_state.items() if k.startswith("grill_1_")}
     assert len(grilled) == 1, list(st.session_state)
     check, out = next(iter(grilled.values()))
+    assert st.session_state["open_card"] == 1        # the card stays open to show the result
     assert check.notes == ["You said 18 months; the pack shows runway of 17 months in Q3 2026."]
     assert out["follow_up"] and all(1 <= out["scores"][k]["score"] <= 5 for k in ("clarity", "use_of_data", "root_cause"))
