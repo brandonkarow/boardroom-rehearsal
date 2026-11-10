@@ -1,0 +1,127 @@
+# Risk rules for Boardroom Rehearsal.
+# Written to be read by a CFO: each rule says what is measured, over what window,
+# and where amber and red start. Code evaluates these; the AI never does.
+#
+# Rule types
+#   change            current value minus the value `lookback` quarters earlier
+#   level             the current value on its own
+#   vs_target         current value divided by a target column
+#   growth_pct        % change vs `lookback` quarters earlier
+#   consecutive_miss  consecutive latest quarters where actual is below plan by > miss_pct
+#
+# direction: "down_is_bad" / "up_is_bad" / "up_is_good" tells code which way a move hurts.
+# Description templates may only use values code computed ({current}, {prior}, ...).
+
+rules:
+  - id: NRR_DECLINE
+    label: Net revenue retention falling
+    metric: nrr_pct
+    type: change
+    lookback: 2            # quarters
+    unit: pts
+    direction: down_is_bad
+    amber: -2.0            # a 2-point drop in two quarters gets attention
+    red: -5.0
+    persona_hint: growth_vc
+    template: "NRR fell from {prior}% in {prior_quarter} to {current}% in {quarter} ({delta} pts in two quarters)."
+
+  - id: BURN_MULTIPLE
+    label: Burn multiple above efficient range
+    metric: burn_multiple
+    type: level
+    unit: x
+    direction: up_is_bad
+    amber: 1.5
+    red: 2.0
+    compare_lookback: 4    # also report the year-ago value for context
+    persona_hint: cash_investor
+    template: "Burn multiple is {current}x in {quarter}, up from {prior}x in {prior_quarter} (+{delta}x year over year)."
+
+  - id: GROSS_MARGIN
+    label: Gross margin compression
+    metric: gross_margin_pct
+    type: change
+    lookback: 4
+    unit: pts
+    direction: down_is_bad
+    amber: -2.0            # 2+ points a year is a margin story the board will want explained
+    red: -4.0
+    persona_hint: independent_director
+    template: "Gross margin is {current}% in {quarter}, down {abs_delta} pts from {prior}% in {prior_quarter}."
+
+  - id: PIPELINE_COVERAGE
+    label: Next-quarter pipeline below target
+    metric: pipeline_coverage_x
+    type: vs_target
+    target_metric: pipeline_target_x
+    unit: x
+    direction: down_is_bad
+    amber: 1.00            # anything under target is amber
+    red: 0.85              # under 85% of target is red
+    persona_hint: growth_vc
+    template: "Next-quarter pipeline coverage is {current}x against a {target}x target ({ratio_pct}% of target)."
+
+  - id: RUNWAY
+    label: Runway shortening
+    metric: runway_months
+    type: level
+    unit: months
+    direction: down_is_bad
+    amber: 18.0            # inside 18 months, the next raise is on the board's agenda
+    red: 12.0              # inside 12 months, it is urgent
+    compare_lookback: 2
+    persona_hint: cash_investor
+    template: "Runway is {current} months in {quarter}, down from {prior} months in {prior_quarter}."
+
+  - id: FORECAST_MISS
+    label: Net new ARR missed plan in consecutive quarters
+    metric: net_new_arr_m
+    type: consecutive_miss
+    plan_metric: net_new_arr_plan_m
+    unit: "$M"
+    miss_pct: 10.0         # a miss counts if actual is more than 10% below plan
+    amber: 1               # one material miss
+    red: 2                 # two or more in a row
+    persona_hint: independent_director
+    template: "Net new ARR missed plan by more than {miss_pct}% for {count} quarters running: {miss_detail}."
+
+  - id: ENTERPRISE_LOGOS
+    label: Enterprise logo growth
+    metric: enterprise_logos
+    type: growth_pct
+    lookback: 4
+    unit: "%"
+    direction: up_is_good
+    positive: 25.0         # 25%+ year-over-year growth is a story worth telling
+    persona_hint: growth_vc
+    template: "Enterprise logos grew from {prior} in {prior_quarter} to {current} in {quarter} (+{delta}% year over year)."
+
+  # Watch-list rules: in the pack, expected NOT to fire on the Northbeam sample.
+  - id: GRR_DECLINE
+    label: Gross revenue retention below floor
+    metric: grr_pct
+    type: level
+    unit: "%"
+    direction: down_is_bad
+    amber: 90.0
+    red: 85.0
+    compare_lookback: 4
+    persona_hint: growth_vc
+    template: "GRR is {current}% in {quarter} vs {prior}% in {prior_quarter}."
+
+  - id: CAC_PAYBACK
+    label: CAC payback lengthening
+    metric: cac_payback_months
+    type: level
+    unit: months
+    direction: up_is_bad
+    amber: 24.0
+    red: 30.0
+    compare_lookback: 4
+    persona_hint: cash_investor
+    template: "CAC payback is {current} months in {quarter}, vs {prior} months in {prior_quarter}."
+
+severity_weights:          # used later to rank questions
+  red: 3.0
+  amber: 2.0
+  positive: 1.5

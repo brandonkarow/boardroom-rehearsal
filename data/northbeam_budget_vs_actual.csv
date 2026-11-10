@@ -1,0 +1,11 @@
+quarter,line_item,budget_m,actual_m,variance_m,variance_pct
+Q3 2026,Revenue,12.0,11.64,-0.36,-3.0
+Q3 2026,Cost of revenue (incl. cloud hosting),2.88,3.17,0.29,10.1
+Q3 2026,Gross profit,9.12,8.47,-0.65,-7.1
+Q3 2026,Sales & marketing,7.1,7.0,-0.1,-1.4
+Q3 2026,Research & development,4.9,4.9,0.0,0.0
+Q3 2026,General & administrative,2.1,2.2,0.1,4.8
+Q3 2026,Total operating expenses,14.1,14.1,0.0,0.0
+Q3 2026,Operating income,-4.98,-5.63,-0.65,-13.1
+Q3 2026,"Other cash items (capex, working capital)",0.4,0.4,0.0,0.0
+Q3 2026,Net burn,5.38,6.03,0.65,12.1

@@ -1,0 +1,10 @@
+# Pinned for a reproducible Streamlit Community Cloud build (Python 3.11+).
+# numpy is left to pandas/scikit-learn to resolve, so the same file works on 3.11 and 3.12+.
+streamlit==1.66.1
+anthropic==2.3.0
+pandas==3.0.5
+scikit-learn==1.9.1
+PyYAML==6.0.3
+python-docx==1.2.0
+python-dotenv==1.2.3
+pytest==9.1.1
