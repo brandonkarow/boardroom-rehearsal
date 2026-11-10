@@ -368,3 +368,17 @@ back**. Read every card as a board member would. Found:
 - Test correction (own): an earlier example, "runway is really 14 months", wasn't actually
   invented. Runway was 13.8 months in Q4 2024, so the checker was right to accept it.
 - 138 tests pass (1 skipped until the saved Grill me exchange is in the demo cache).
+- **Grill me saved for demo mode:** the agent ran one live exchange on the deployed app
+  (Instant demo rehearsal, then Live for the grill, on card 1 with the sample answer). It
+  took 12 seconds. The investor's follow-up went straight at the error code had flagged: "You said 18
+  months. The pack says 17. Which is it? And 'Q2 next year' isn't a date." Coaching: clarity
+  3/5, use of data 2/5, root cause 2/5. Every figure in it passed the checker (net new ARR
+  -31.7% YoY, NRR 109% vs 119%, $34.2M cash). Merged into demo_cache/cache.json, and the
+  demo test now runs instead of skipping.
+- **Chat history:** Brandon couldn't find Cowork's export options, so the agent built
+  `agent_chat_history.md` from the session transcript in its own workspace. It includes
+  every message and reply, one line per tool action with test results, and leaves out tool
+  outputs and private reasoning. Screened for email addresses, other job searches, keys and
+  tokens.
+- **Loom script and cover email** drafted in Brandon's voice in a separate doc.
+- 139 tests pass.

@@ -61,6 +61,11 @@ checked, and every peer insight is traceable to the thread it came from.
    construction: code turns the company's numbers into ranges, and a draft that names the
    company or uses an exact figure is rejected.
 6. **Hands you a brief.** Two pages to take into the room, plus an appendix.
+7. **Lets you rehearse (Grill me).** Answer any question in your own words. Code first
+   checks every figure you used ("You said 18 months; the pack shows runway of 17
+   months"). Then the board member presses once, and you get coaching on clarity, use of
+   data and root cause. The coaching is labeled as the AI's judgment, and its figures are
+   checked too.
 
 ## Design principles, and how each is enforced
 
@@ -78,19 +83,21 @@ checked, and every peer insight is traceable to the thread it came from.
 Built in one session with Claude as the coding agent, spec first
 ([`CLAUDE.md`](CLAUDE.md)), in phases with a review checkpoint after each. Decisions,
 corrections and surprises are logged in [`BUILD_LOG.md`](BUILD_LOG.md). The full agent
-chat history is submitted alongside. A few moments worth reading in the log:
+chat history is in [`agent_chat_history.md`](agent_chat_history.md). A few moments worth reading in the log:
 
 - **The verifier was rebuilt three times on real model output.** The first version matched
   figures by value alone, so "runway 18 months" passed because 18 is a threshold.
 - **A card with all-true numbers made a false claim**, "margin has fallen four quarters in
   a row" (it was three). That led to code-computed streaks.
+- **Building Grill me exposed a verifier hole:** "runway is really 11 months" passed,
+  because runway *fell* 11 months. Changes now only match figures phrased as changes.
 - **Peer counts moved from the AI to code** after the first live run showed a count could
   be attached to the wrong approach.
 - **Retrieval calibration found a flaw:** an unrelated "data privacy" question matched a
   margin thread, so matching was reworked into topic plus question wording, with an
   honest coverage grade.
 
-**Tests:** `pytest` runs 125 tests, including attacks on each guardrail, messy Excel exports,
+**Tests:** `pytest` runs 139 tests, including attacks on each guardrail, messy Excel exports,
 and a regression suite on real model output.
 
 ## Out of scope, and what I'd build next
@@ -98,9 +105,8 @@ and a regression suite on real model output.
 - Reading real board decks (PDF or slides); this prototype reads a KPI CSV.
 - A real Braintrust integration; the threads are synthetic and "Post" is a mock.
 - Accounts, saved history, and more than one company.
-- Next: "Grill me" practice mode (answer a question; the board member pushes back once),
-  board-member profiles ("this investor always asks about cohorts"), and prep notes that
-  carry from one quarter to the next.
+- Next: a multi-turn Grill me (today it presses once), board-member profiles ("this
+  investor always asks about cohorts"), and prep notes that carry from one quarter to the next.
 
 ## Path to Floyd
 
@@ -138,6 +144,7 @@ engine/llm.py             Claude client, JSON validation and retry, demo cache
 engine/brief.py           board prep brief (.docx, .md)
 prompts/                  system prompt, personas, task prompts
 data/                     synthetic board pack, budget vs actual, 40 peer threads
-demo_cache/cache.json     one saved live run (7 AI outputs) for demo mode
+demo_cache/cache.json     one saved live run (7 AI outputs) + one Grill me exchange, for demo mode
+engine/grill.py           Grill me: code-checked answers, one follow-up, coaching
 tests/                    pytest
 ```

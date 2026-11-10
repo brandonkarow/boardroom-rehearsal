@@ -729,5 +729,30 @@
       }
     },
     "created": "2026-11-10T15:30:13+00:00"
+  },
+  "grill/1a4b8c443fa1dbac:210f9610fc3f4f5e": {
+    "task": "grill/1a4b8c443fa1dbac",
+    "model": "claude-sonnet-5-5",
+    "run_id": "03dd653a994a",
+    "output": {
+      "follow_up": "You said 18 months. The pack says 17. Which is it? And 'Q2 next year' isn't a date. Give me the day you start the Series D process, and tell me what the burn multiple has to show by then for the enterprise story to hold, because today it's 2.1x against 1.5x a year ago.",
+      "scores": {
+        "clarity": {
+          "score": 3,
+          "why": "It leads with a timing answer (Q2 next year) and is short, but opens with 'comfortable' when runway is falling, and gives a quarter rather than a launch date."
+        },
+        "use_of_data": {
+          "score": 2,
+          "why": "It misstates runway as 18 months (the pack shows 17), and never cites the 2.1x vs 1.5x burn multiple, the drop from 22 months, or $34.2M cash. The 40% enterprise logo growth and roughly flat $6M burn are accurate."
+        },
+        "root_cause": {
+          "score": 2,
+          "why": "'Growth problem, not a spending problem' points the right way, but it never says why net new ARR is down 31.7% year over year (NRR 109% vs 119%, pipeline coverage 2.4x vs 3.1x, CAC payback 22 vs 18 months). 'We expect efficiency to improve' is an unsupported promise, and there is no downside plan or decision."
+        }
+      },
+      "strongest": "It recognized that flat burn of about $6M a quarter means the multiple is rising because new ARR is weakening, not because spending is up, and it offered a concrete story (enterprise logos up 40%).",
+      "fix": "Open with the correct figures (17 months of runway, 2.1x vs 1.5x, $34.2M cash), name a specific launch date worked back from how long a recovery takes to show up, say why net new ARR is falling, and bring a burn-cut plan with triggers instead of assuming efficiency will improve."
+    },
+    "created": "2026-11-10T18:13:14+00:00"
   }
 }
