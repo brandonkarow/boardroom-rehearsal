@@ -23,12 +23,10 @@ def esc(text: str) -> str:
     return str(text).replace("$", r"\$")
 
 
-@st.cache_resource
-def get_llm() -> LLM:
-    return LLM()
-
-
-llm = get_llm()
+# Built fresh on each run (cheap). Caching it with st.cache_resource kept a client from
+# an older version of the code alive after a redeploy, so its errors slipped past
+# the new code's `except LLMError`.
+llm = LLM()
 ss = st.session_state
 
 # ---- Sidebar: data and mode ----------------------------------------------------

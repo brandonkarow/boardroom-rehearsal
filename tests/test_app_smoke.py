@@ -29,7 +29,6 @@ class State(dict):
 def fake_streamlit(buttons):
     st = MagicMock()
     st.session_state = State()
-    st.cache_resource = lambda f: f
     st.secrets = {}
     st.stop.side_effect = Stop
     st.button.side_effect = lambda label, **kw: buttons.get(label, False)

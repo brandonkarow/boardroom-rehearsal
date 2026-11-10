@@ -113,3 +113,28 @@ def test_rank_fills_ten_when_caps_are_tight(fake_llm, pack, report, bva):
     assert len(top) == 10
     texts = [q.question for q in top]
     assert len(set(texts)) == 10
+
+
+def test_truncated_reply_is_retried_then_explained():
+    from engine.llm import TruncatedReply
+
+    class CutOff:
+        calls = 0
+        def complete(self, s, u):
+            CutOff.calls += 1
+            raise TruncatedReply("the reply was cut off at the token limit")
+    with pytest.raises(LLMError, match="cut off at the token limit"):
+        call_json(CutOff(), "s", "u", lambda o: o)
+    assert CutOff.calls == 2
+
+
+def test_one_persona_crashing_does_not_take_down_the_rest(tmp_path, pack, report, bva):
+    class Flaky(FakeClient):
+        def complete(self, system, user):
+            if "\nThe Skeptical Independent Director\n- Seat" in user:
+                raise RuntimeError("boom")
+            return super().complete(system, user)
+    llm = LLM(client=Flaky(), cache=DemoCache(tmp_path / "c.json"))
+    cands, errors = generate_candidates(llm, pack, report, bva)
+    assert len(errors) == 1 and "Independent Director" in errors[0] and "RuntimeError" in errors[0]
+    assert {c.persona_id for c in cands} == {"growth_vc", "cash_investor"}

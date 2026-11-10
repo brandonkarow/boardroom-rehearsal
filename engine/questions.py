@@ -153,6 +153,10 @@ def generate_candidates(llm: LLM, pack: KPIPack, report: SignalReport,
             except LLMError as exc:
                 errors.append(f"{p.name}: {exc}")
                 continue
+            except Exception as exc:   # never let one board member's call take the app down
+                errors.append(f"{p.name}: unexpected error ({exc.__class__.__name__}); "
+                              "the other board members' questions are still shown.")
+                continue
             out += [Question(persona_id=p.id, persona_name=p.name, **q) for q in items]
     return out, errors
 

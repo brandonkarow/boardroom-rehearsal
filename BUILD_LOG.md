@@ -167,3 +167,17 @@ back**. Read every card as a board member would. Found:
   Growth VC still took one burn question. Left it: it's framed as a growth investor's
   question ("is the burn still buying growth?").
 - 76 tests pass.
+
+## 2026-11-10 — Third live run: crash
+
+- **Crash:** `engine.llm.LLMError` reached the user as a red error page. Two bugs:
+  1. **Stale cached client.** `@st.cache_resource` kept the LLM object built by the
+     *previous* code version alive across the redeploy. Its exception class came from
+     the old module, so the new code's `except LLMError` didn't match it (the traceback
+     mixed old and new line numbers). Fix: build the client fresh each run, and catch
+     any exception per persona so one board member's failure never takes the app down.
+  2. **Probable cause of the failure itself:** max_tokens was 4,000, but Sonnet 5.5's
+     adaptive thinking counts toward it, so a detailed reply can be cut off mid-JSON
+     (twice → "invalid output"). Fix: 16,000 tokens, and a cut-off reply (stop_reason
+     `max_tokens`) is reported as exactly that, so the cause is visible in-app next time.
+- 78 tests pass.

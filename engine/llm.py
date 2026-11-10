@@ -20,7 +20,9 @@ ROOT = Path(__file__).resolve().parent.parent
 PROMPTS = ROOT / "prompts"
 CACHE_PATH = ROOT / "demo_cache" / "cache.json"
 MODEL = os.getenv("BR_MODEL", "claude-sonnet-5-5")
-MAX_TOKENS = 4000
+# Sonnet 5.5 thinks before it answers and thinking counts toward max_tokens, so leave
+# plenty of room: 4,000 cut replies off mid-JSON on a live run.
+MAX_TOKENS = 16000
 
 
 class LLMError(RuntimeError):
@@ -29,6 +31,10 @@ class LLMError(RuntimeError):
 
 class DemoCacheMiss(LLMError):
     pass
+
+
+class TruncatedReply(ValueError):
+    """The model hit max_tokens; retried like any other invalid reply."""
 
 
 def read_prompt(name: str) -> str:
@@ -72,7 +78,10 @@ class AnthropicClient:
         except Exception as exc:
             raise LLMError(f"The AI call failed ({exc.__class__.__name__}). "
                            "Check the API key and spend limit, or use demo mode.") from exc
-        return "".join(getattr(b, "text", "") for b in msg.content if getattr(b, "type", "") == "text")
+        text = "".join(getattr(b, "text", "") for b in msg.content if getattr(b, "type", "") == "text")
+        if getattr(msg, "stop_reason", None) == "max_tokens":
+            raise TruncatedReply("the reply was cut off at the token limit")
+        return text
 
 
 # ---- JSON -------------------------------------------------------------------
@@ -95,9 +104,8 @@ def call_json(client: Client, system: str, user: str,
     """Call the model, parse and validate JSON; on failure, retry once with the error."""
     prompt, last_err = user, None
     for _ in range(retries + 1):
-        text = client.complete(system, prompt)
         try:
-            return validate(parse_json(text))
+            return validate(parse_json(client.complete(system, prompt)))
         except (ValueError, KeyError, TypeError) as exc:
             last_err = str(exc)
             prompt = (user + "\n\nYour previous reply could not be used: " + last_err
