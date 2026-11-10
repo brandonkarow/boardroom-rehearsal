@@ -194,3 +194,25 @@ def test_every_card_gets_peers_or_a_draft(fake_llm, pack, report, bva):
             assert p.draft and "northbeam" not in json.dumps(p.draft).lower()
     consensus_calls = [c for c in fake_llm.client.calls if "summarize how peer CFOs" in c]
     assert 1 <= len(consensus_calls) <= 3                       # batched, not one call per question
+
+
+def test_checked_output_re_validates_unchanged(consensus_validator, draft_validator):
+    # Demo mode re-runs the checks on cached (already-checked) output.
+    first = consensus_validator(_summary([
+        {"approach": "split_churn_vs_expansion", "text": "Peers charted GRR against NRR.", "thread_ids": ["BT-1006"]}]))
+    assert consensus_validator(first) == first
+    d = {"drafts": [{"q_id": "Q1", "title": "t", "question": "Series C B2B SaaS at $25–50M ARR. What did you do?"}]}
+    once = draft_validator(d)
+    assert draft_validator(once) == once
+
+
+def test_committed_demo_cache_replays_fully(pack, report, bva):
+    """The shipped demo cache must give the full experience with no API key."""
+    llm = LLM(client=None, cache=DemoCache())     # demo_cache/cache.json as committed
+    llm.mode = "demo"
+    r = pipeline.run(llm, pack, bva, report)
+    assert r.errors == [] and len(r.top) == 10 and r.verification.ok and not r.held_back
+    peers = [q.extra["peers"] for q in r.top]
+    assert all(p.summary for p in peers)
+    assert sum(bool(p.draft) for p in peers) >= 1
+    assert all(pt.get("count") or pt.get("approach") is None for p in peers for pt in p.summary["points"])

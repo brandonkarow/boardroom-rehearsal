@@ -8,7 +8,7 @@ import re
 
 import streamlit as st
 
-from engine import pipeline
+from engine import brief, pipeline
 from engine.kpis import METRIC_INFO, SchemaError, load_budget_vs_actual, load_kpis
 from engine.llm import LLM
 from engine.peers import threads_by_id
@@ -27,8 +27,8 @@ def esc(text: str) -> str:
 # Built fresh on each run (cheap). Caching it with st.cache_resource kept a client from
 # an older version of the code alive after a redeploy, so its errors slipped past
 # the new code's `except LLMError`.
-llm = LLM()
 ss = st.session_state
+live_llm = LLM()
 
 # ---- Sidebar: data and mode ----------------------------------------------------
 with st.sidebar:
@@ -43,20 +43,38 @@ with st.sidebar:
         except SchemaError as exc:
             st.error(str(exc))
     st.divider()
-    if llm.mode == "live":
-        st.success(f"Live mode · {llm.model}")
+    st.header("AI mode")
+    is_sample = ss.get("pack") is None or ss.get("pack").source == "sample"
+    if live_llm.mode == "live":
+        options = ["Instant demo (saved run)", "Live AI run"] if is_sample else ["Live AI run"]
+        choice = st.radio("Mode", options, label_visibility="collapsed",
+                          help="The demo replays a saved live run of the Northbeam sample, with every "
+                               "check re-run. A live run calls Claude (about 90 seconds).")
     else:
-        st.info("Demo mode · no API key, so cached AI outputs for the Northbeam sample are used.")
-    st.caption("All data is synthetic. Northbeam Analytics is a fictional company.")
+        choice = "Instant demo (saved run)"
+    if choice == "Live AI run":
+        llm = live_llm
+        st.success(f"Live · {llm.model}")
+    else:
+        llm = LLM(client=None)
+        llm.mode = "demo"
+        st.info("Demo · replays a saved live run. Every figure, citation and count is re-checked by code."
+                + ("" if live_llm.mode == "live" else " No API key needed."))
+    st.caption("All data is synthetic. Northbeam Analytics is a fictional company; "
+               "peer CFO threads are fictional.")
 
 # ---- Header ---------------------------------------------------------------------
 st.title("Boardroom Rehearsal")
-st.markdown("See the 10 hardest questions your board will ask, with answer outlines grounded in "
-            "your numbers. **Code computes every number; the AI only writes the words.**")
+st.markdown("Walk into the board meeting having already heard the 10 hardest questions, with answer "
+            "outlines grounded in your numbers and how peer CFOs handled the same questions.")
+st.caption("① Code flags what the board will probe  ·  ② three AI board members ask, code ranks the "
+           "top 10  ·  ③ every figure is checked against the KPI table  ·  ④ peer threads are matched in "
+           "code, and every peer insight cites its thread")
 
 pack = ss.get("pack")
 if pack is None:
-    st.info("Start with **Load Northbeam Q3 board pack** in the sidebar.")
+    st.info("**Try it in 60 seconds:** click **Load Northbeam Q3 board pack** in the sidebar, then "
+            "**Rehearse**. Northbeam Analytics is a fictional Series C SaaS company.")
     st.stop()
 
 report = evaluate(pack)
@@ -189,6 +207,20 @@ for q in result.top:
         v = q.extra["verification"]
         st.caption(esc("Figures checked: " + (", ".join(f"{c.text} ✓" for c in v.checks) or "none")))
         render_peers(q)
+
+# ---- 3. Board prep brief ------------------------------------------------------------
+if result.top:
+    st.subheader("3 · Take it into the room")
+    mode_label = "Live AI run" if llm.mode == "live" else "Instant demo (saved live run)"
+    fname = f"board_prep_brief_{pack.quarter.replace(' ', '_')}"
+    c1, c2, _ = st.columns([1, 1, 3])
+    c1.download_button("Download brief (.docx)", brief.to_docx(result, mode_label), f"{fname}.docx",
+                       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                       type="primary", use_container_width=True)
+    c2.download_button("Download brief (.md)", brief.to_markdown(result, mode_label), f"{fname}.md",
+                       "text/markdown", use_container_width=True)
+    st.caption("Page 1–2: the hard 10 at a glance (what to say, what to avoid, what peers did). "
+               "Appendix: full outlines, peer insights with thread citations, Braintrust drafts.")
 
 if result.held_back:
     with st.expander(f"Held back by the verifier ({len(result.held_back)})"):

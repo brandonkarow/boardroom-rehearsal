@@ -41,8 +41,9 @@ def fake_streamlit(buttons):
 def test_sample_flow_renders_ten_verified_cards(monkeypatch, tmp_path):
     st = fake_streamlit({"Load Northbeam Q3 board pack": True, "Rehearse": True})
     monkeypatch.setitem(sys.modules, "streamlit", st)
+    st.radio.return_value = "Live AI run"
     monkeypatch.setattr(engine.llm, "LLM",
-                        lambda: LLM(client=FakeClient(), cache=DemoCache(tmp_path / "c.json")))
+                        lambda **kw: LLM(client=kw.get("client", FakeClient()), cache=DemoCache(tmp_path / "c.json")))
     runpy.run_path("app.py", run_name="__main__")
     result = st.session_state["result"]
     assert len(result.top) == 10 and result.verification.ok
@@ -54,7 +55,18 @@ def test_sample_flow_renders_ten_verified_cards(monkeypatch, tmp_path):
 def test_empty_start_stops_with_a_hint(monkeypatch, tmp_path):
     st = fake_streamlit({})
     monkeypatch.setitem(sys.modules, "streamlit", st)
-    monkeypatch.setattr(engine.llm, "LLM", lambda: LLM(client=None, cache=DemoCache(tmp_path / "c.json")))
+    monkeypatch.setattr(engine.llm, "LLM", lambda **kw: LLM(client=None, cache=DemoCache(tmp_path / "c.json")))
     with pytest.raises(Stop):
         runpy.run_path("app.py", run_name="__main__")
     st.info.assert_called()
+
+
+def test_reviewer_path_instant_demo_with_committed_cache(monkeypatch):
+    """No key, sample pack, Rehearse: the full experience from demo_cache/cache.json."""
+    st = fake_streamlit({"Load Northbeam Q3 board pack": True, "Rehearse": True})
+    monkeypatch.setitem(sys.modules, "streamlit", st)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    runpy.run_path("app.py", run_name="__main__")
+    result = st.session_state["result"]
+    assert result.errors == [] and len(result.top) == 10 and result.verification.ok
+    assert all(q.extra["peers"].summary for q in result.top)

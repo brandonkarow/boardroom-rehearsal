@@ -1,0 +1,733 @@
+{
+  "questions/growth_vc:110d7f593137a362": {
+    "task": "questions/growth_vc",
+    "model": "claude-sonnet-5-5",
+    "run_id": "9f9fa6d77034",
+    "output": [
+      {
+        "question": "NRR has gone from 118% in Q1 to 109% in Q3, while gross retention only slipped from 92% to 91%. That looks like expansion stalling, not customers leaving. Is this a product gap, a pricing and packaging problem, or a segment problem? And what has to be true to get NRR back to 118%, and by when?",
+        "signal_ids": [
+          "NRR_DECLINE"
+        ],
+        "why_they_ask": "They want to know whether the growth engine is structurally broken or fixable, and whether the recovery plan has a date they can hold you to.",
+        "answer_outline": [
+          "Headline: the NRR decline is mainly an expansion slowdown rather than churn, and I can say which cause it is (product, pricing or segment).",
+          "Evidence: NRR fell from 118% in Q1 to 109% in Q3 while gross retention moved only from 92% to 91%. The split of NRR by segment, product and pricing tier is not in the data I have, so bring that cut and name the cohort where expansion slowed most.",
+          "Action: name the one or two levers you are pulling, and give quarterly NRR milestones toward 118%. Commit only to a date the cohort analysis supports."
+        ],
+        "trap_to_avoid": "Blaming macro conditions or customer budgets for the NRR drop when gross retention is nearly flat and the data points to slower expansion inside your own base."
+      },
+      {
+        "question": "Enterprise logos are up from 30 to 42 in a year, which is the best number in the deck. But net new ARR is $2.87M against $4.2M a year ago. Is the enterprise motion repeatable, with a defined buyer, sales cycle and expansion path, or is it a handful of good deals? If it is real, what would you reallocate to double down on it?",
+        "signal_ids": [
+          "ENTERPRISE_LOGOS",
+          "FORECAST_MISS"
+        ],
+        "why_they_ask": "They want to back the enterprise story, but logo growth alongside falling net new ARR makes them doubt it is moving the numbers.",
+        "answer_outline": [
+          "Headline: enterprise is working and is the place to put incremental investment, if the repeatability evidence holds.",
+          "Evidence: logos grew 40% year over year (30 to 42), with 3 added this quarter. Deal size, concentration and enterprise expansion rates are not in the data I have, so bring them to show these are not a few outsized deals.",
+          "Action: propose a specific reallocation of sales or product capacity toward enterprise, with the metric and checkpoint date that would confirm or kill the bet."
+        ],
+        "trap_to_avoid": "Presenting the logo count as proof that enterprise is working without showing that those accounts are producing ARR and expanding."
+      },
+      {
+        "question": "Next-quarter pipeline coverage is 2.4x against a 3x target, and it was 3.1x a year ago. It has fallen five quarters in a row. Is this a top-of-funnel volume problem or a conversion and quality problem? What has to be true to get back to 3x, and by when?",
+        "signal_ids": [
+          "PIPELINE_COVERAGE"
+        ],
+        "why_they_ask": "Thin pipeline means next quarter's growth is already compromised, and they suspect the funnel problem has been building for a while.",
+        "answer_outline": [
+          "Headline: coverage is below target because of a specific funnel stage, which I can name. It is not a general slowdown.",
+          "Evidence: coverage is 2.4x versus the 3x target and 3.1x a year ago. Show the funnel by source and segment, including stage conversion and win rates. That breakdown is not in the data I have, so bring it.",
+          "Action: name the pipeline-generation actions, their owners and the coverage level you expect by quarter. Say plainly what coverage you can and cannot get back to 3x."
+        ],
+        "trap_to_avoid": "Defending a coverage number without separating pipeline volume from pipeline quality, or promising a return to 3x without a funnel-based reason."
+      },
+      {
+        "question": "You missed net new ARR plan by more than 10% twice running: $3.1M against $3.9M in Q2, and $2.87M against $3.8M in Q3. The Q3 miss was 24.5%. What did the plan assume that turned out wrong: new-logo conversion, deal size or expansion? What is the Q4 number now, and why should we believe it?",
+        "signal_ids": [
+          "FORECAST_MISS"
+        ],
+        "why_they_ask": "A second large miss makes them doubt the planning model, and they will not back an acceleration plan on numbers they cannot trust.",
+        "answer_outline": [
+          "Headline: the plan overstated one or two specific drivers, and I have re-based it on what we now observe.",
+          "Evidence: Q2 came in at $3.1M against a $3.9M plan (-20.5%) and Q3 at $2.87M against $3.8M (-24.5%). Identify which assumption drove the gap and how it differs from the run-rate.",
+          "Action: present the re-based Q4 plan with the assumptions behind it, and state which leading indicators you will report monthly so the board sees a miss before the quarter ends."
+        ],
+        "trap_to_avoid": "Describing the misses as timing or slipped deals without evidence, when the shortfall has now repeated across two quarters."
+      },
+      {
+        "question": "Burn is flat at $6.03M a quarter, but the burn multiple is 2.1x against 1.5x a year ago, and runway is down to 17 months from 22 in Q1. Net burn came in above budget, with gross profit short of plan. Given this, which growth investments are you still willing to fund, and what trigger makes you cut?",
+        "signal_ids": [
+          "BURN_MULTIPLE",
+          "RUNWAY"
+        ],
+        "why_they_ask": "As the lead investor they are willing to fund growth, but they need to see that spending is tied to returns and that the company can reach its next milestone before cash gets tight.",
+        "answer_outline": [
+          "Headline: we are spending the same but getting less net new ARR for it, and I am protecting the growth bets with the best return.",
+          "Evidence: the burn multiple is 2.1x versus 1.5x a year ago and runway is 17 months. Net burn was $6.03M against a $5.38M budget. Gross profit was $8.47M against $9.12M budgeted, and cost of revenue was 10.1% over budget.",
+          "Action: name what you are protecting (for example enterprise), what you are pausing, and the burn multiple or runway level that triggers further cuts or a financing decision."
+        ],
+        "trap_to_avoid": "Treating the burn multiple as a temporary dip that growth will fix without saying which spending you would change if growth does not return."
+      }
+    ],
+    "created": "2026-11-10T15:29:10+00:00"
+  },
+  "questions/independent_director:110d7f593137a362": {
+    "task": "questions/independent_director",
+    "model": "claude-sonnet-5-5",
+    "run_id": "9f9fa6d77034",
+    "output": [
+      {
+        "question": "Net new ARR came in at $3.1M against a $3.9M plan in Q2, then $2.87M against $3.8M in Q3. Those are misses of 20.5% and 24.5%. After the Q2 miss, the Q3 plan came down by only $0.1M. What specifically did you change in the forecasting process after Q2, and why should we believe next quarter's number when next-quarter pipeline coverage is 2.4x against your 3x target?",
+        "signal_ids": [
+          "FORECAST_MISS",
+          "PIPELINE_COVERAGE"
+        ],
+        "why_they_ask": "Two large misses in a row, plus a Q3 plan that barely moved after the first miss, suggest the forecasting process didn't learn anything.",
+        "answer_outline": [
+          "Headline: We missed plan twice by more than 20%, and the Q3 plan did not reflect what Q2 had already told us.",
+          "Evidence: Q2 was $3.1M vs $3.9M plan and Q3 was $2.87M vs $3.8M. Pipeline coverage is 2.4x vs the 3x target, and it was 3.1x a year ago.",
+          "Action: State the specific process changes, such as how pipeline is stage-weighted and who signs off on the forecast. Offer to present next quarter's forecast with a downside case built on current coverage, and say what you will report if it misses again."
+        ],
+        "trap_to_avoid": "Do not say the plan was reasonable and the shortfall was just timing or market conditions; the plan was reset after the first miss and still missed by more."
+      },
+      {
+        "question": "Gross margin is 72.8%, down from 75.8% a year ago, and it has fallen three quarters in a row. Cost of revenue, including cloud hosting, ran over budget this quarter. Is that overrun one-off or structural? What evidence shows it will stop here rather than keep falling?",
+        "signal_ids": [
+          "GROSS_MARGIN"
+        ],
+        "why_they_ask": "A falling margin that management calls temporary is a classic sign of a structural cost problem being under-forecast.",
+        "answer_outline": [
+          "Headline: Margin is down 3 points year over year and has fallen for three straight quarters, so I won't call it a one-off until the cost drivers are separated.",
+          "Evidence: Margin was 75.8% a year ago and 73.5% last quarter, and is 72.8% now. Cost of revenue is over budget. Break the overrun into one-time items and run-rate items, using the cost-of-revenue detail.",
+          "Action: Name an owner and a target margin for the cost-of-revenue lines. Commit to showing the run-rate versus one-time split next quarter, and say what you will do if margin falls again."
+        ],
+        "trap_to_avoid": "Do not label the compression one-off or temporary without a run-rate breakdown; a three-quarter decline contradicts that claim."
+      },
+      {
+        "question": "Net revenue retention went from 118% in Q1 to 109% in Q3, and gross retention slipped to 91%. When did management first see this in the data, and was it reflected in the plan we approved? If it was, why did new ARR miss as well? If it wasn't, what control failed?",
+        "signal_ids": [
+          "NRR_DECLINE"
+        ],
+        "why_they_ask": "She wants to know whether management saw the retention decline coming, and whether the plan assumed retention that the business wasn't delivering.",
+        "answer_outline": [
+          "Headline: Retention fell 9 points in two quarters, and the plan did not fully anticipate it. Say plainly when you first saw it.",
+          "Evidence: NRR was 118% in Q1, 113% in Q2 and 109% in Q3. GRR fell from 92% to 91%. Say what the plan assumed for NRR and when the early indicators first moved.",
+          "Action: Say which cohorts or segments are driving the decline, and what you are doing about them. Put retention into the monthly forecast review with a named early-warning measure."
+        ],
+        "trap_to_avoid": "Do not blame macro conditions or customer budgets without cohort-level evidence, and do not claim you saw it coming if the plan did not reflect it."
+      },
+      {
+        "question": "Net burn came in over budget this quarter while net new ARR missed plan. The burn multiple is now 2.1x, above the board's 2x red line and up from 1.5x a year ago. Runway is 17 months, down from 22 in Q1. What spending decisions have you actually made, what is the trigger for the next ones, and how confident are you in the 17 months given the forecast record?",
+        "signal_ids": [
+          "BURN_MULTIPLE",
+          "RUNWAY",
+          "FORECAST_MISS"
+        ],
+        "why_they_ask": "If the runway figure rests on the same forecasting process that missed plan twice, the cash-out date may be earlier than presented.",
+        "answer_outline": [
+          "Headline: We are past the board's red line on burn efficiency and below 18 months of runway, so spending has to follow results.",
+          "Evidence: The burn multiple is 2.1x versus 1.5x a year ago, runway is 17 months versus 22 in Q1, and burn exceeded budget while cost of revenue ran over. Show the runway under the current forecast and under a downside case.",
+          "Action: Commit to specific spending levers and the metric thresholds that trigger them, with dates. Tell the board when you would return for a funding decision."
+        ],
+        "trap_to_avoid": "Do not present the runway as settled; it depends on a forecast that has missed twice, so show the downside case."
+      },
+      {
+        "question": "Enterprise logos grew from 30 to 42 over the year, up 40%. That is the strongest number in the deck. Does that growth show up in better retention and margin, or is it being bought? CAC payback is now 22 months, up from 18, and net retention is falling. What is the evidence that enterprise customers are the profitable, durable part of the base?",
+        "signal_ids": [
+          "ENTERPRISE_LOGOS",
+          "NRR_DECLINE"
+        ],
+        "why_they_ask": "She will credit real strength, but she wants proof it is high-quality growth and not logo count masking weaker unit economics.",
+        "answer_outline": [
+          "Headline: Enterprise logo growth is real and well ahead of the board's growth threshold: 42 logos, up 40% year over year.",
+          "Evidence: Logos went from 30 to 42 and added 3 in the latest quarter. Show enterprise retention and margin separately from the blended figures, and acknowledge that blended NRR is 109% and CAC payback is 22 months.",
+          "Action: Say how you will shift investment toward enterprise if its unit economics hold, and which enterprise-specific metrics you will report to the board each quarter."
+        ],
+        "trap_to_avoid": "Do not use logo growth to deflect from the retention and efficiency numbers unless you can show enterprise cohort economics."
+      }
+    ],
+    "created": "2026-11-10T15:29:04+00:00"
+  },
+  "questions/cash_investor:110d7f593137a362": {
+    "task": "questions/cash_investor",
+    "model": "claude-sonnet-5-5",
+    "run_id": "9f9fa6d77034",
+    "output": [
+      {
+        "question": "At a 2.1x burn multiple and 17 months of runway, when do you need to raise, and on what story? A year ago the multiple was 1.5x and runway was 22 months in Q1. Give me the date you start the process.",
+        "signal_ids": [
+          "BURN_MULTIPLE",
+          "RUNWAY"
+        ],
+        "why_they_ask": "He is the largest shareholder and wants to know whether the company will be forced to raise from weakness on a deteriorating efficiency story.",
+        "answer_outline": [
+          "Headline: we plan to launch the raise by a specific date, set by working back from how long a recovery takes to show up in the numbers, not by when cash gets tight.",
+          "Evidence: burn multiple is 2.1x against 1.5x a year ago, runway is 17 months against 22 in Q1, and cash is $34.2M. Runway is now below the board's 18-month amber line.",
+          "Action: bring a board-approved decision on the launch date and a downside plan that cuts burn if the recovery milestones are missed. Don't promise that metrics will improve by then."
+        ],
+        "trap_to_avoid": "Saying 'we have 17 months, so we're fine' and treating runway as a cushion when a raise takes time and the efficiency trend works against us."
+      },
+      {
+        "question": "Net burn was $6.03M against a $5.38M budget, and total operating expenses landed exactly on plan. Cost of revenue was $3.17M against $2.88M. Is hosting the entire overage, and which cuts bring it back without touching growth spend?",
+        "signal_ids": [
+          "GROSS_MARGIN",
+          "BURN_MULTIPLE"
+        ],
+        "why_they_ask": "He wants to know whether the burn miss is a fixable cost-of-revenue problem or a structural margin leak, and which levers cut burn without hurting the growth story.",
+        "answer_outline": [
+          "Headline: the burn overage came from cost of revenue, not from opex discipline slipping.",
+          "Evidence: net burn was 12.1% over budget, cost of revenue was 10.1% over, and total opex was on budget at $14.1M. Gross margin is 72.8% against 75.8% a year ago.",
+          "Action: name the specific hosting and delivery cost levers, an owner for each, and a gross margin target to bring back. Say which levers are in progress and which are proposals, and don't claim savings you haven't confirmed."
+        ],
+        "trap_to_avoid": "Calling the overage a one-time timing issue when gross margin has compressed over a year and you can't show what drives the cost."
+      },
+      {
+        "question": "Net new ARR was $2.87M against a $3.8M plan, a 24.5% miss and the second miss of more than 10% in a row. Sales and marketing spend was $7.0M, almost exactly on budget. Why are we spending to plan on a plan we aren't hitting, and does next-quarter pipeline at 2.4x against a 3x target change the spend?",
+        "signal_ids": [
+          "FORECAST_MISS",
+          "PIPELINE_COVERAGE"
+        ],
+        "why_they_ask": "He sees spend running ahead of results, which drives the burn multiple, and he doubts that the forecast is credible.",
+        "answer_outline": [
+          "Headline: we missed twice, and we are resetting both the forecast and the spend pacing rather than hoping for a catch-up.",
+          "Evidence: Q2 came in at $3.1M against a $3.9M plan, Q3 at $2.87M against $3.8M. Pipeline coverage is 2.4x against 3x, which is 80% of target.",
+          "Action: present a revised next-quarter bookings number built from the pipeline, and say which sales and marketing spend is gated until coverage recovers."
+        ],
+        "trap_to_avoid": "Defending the plan as 'back-end loaded' or pointing to market conditions when pipeline coverage is below target and the miss is already two quarters old."
+      },
+      {
+        "question": "NRR is 109%, down from 118% in Q1, and gross retention slipped to 91%. A new investor will find that in diligence in the first week. What is driving it, has it bottomed, and how does that fit with your raise timing and 17 months of runway?",
+        "signal_ids": [
+          "NRR_DECLINE",
+          "RUNWAY"
+        ],
+        "why_they_ask": "He is worried that falling retention undermines the fundraising story and that proof of recovery may arrive after the window to raise has closed.",
+        "answer_outline": [
+          "Headline: retention is the weakest part of the story, and we know the cause and have a plan to address it.",
+          "Evidence: NRR fell from 118% in Q1 to 109% in Q3, and GRR is 91% against 92% a year ago. Explain which of expansion or churn drove the decline.",
+          "Action: name the retention actions under way, the leading indicator you will report each month, and how the raise plan changes if NRR does not stabilise."
+        ],
+        "trap_to_avoid": "Blaming the market or one large customer without showing the churn-versus-expansion split, which will read as not knowing your own base."
+      },
+      {
+        "question": "Enterprise logos are up 40% year over year to 42, which is the one clearly good number here. But CAC payback is 22 months against 18 a year ago and the burn multiple is 2.1x. Is enterprise the story that justifies the raise, and what proves it pays back?",
+        "signal_ids": [
+          "ENTERPRISE_LOGOS",
+          "BURN_MULTIPLE"
+        ],
+        "why_they_ask": "He wants to know whether the one strong growth signal is efficient enough to anchor the next financing, or whether it is growth being bought at a rising cost.",
+        "answer_outline": [
+          "Headline: enterprise is working. Logos went from 30 to 42, and it is the core of the growth narrative for the raise.",
+          "Evidence: 12 net new enterprise logos in a year (+40%), with ARR at $48.0M. Be upfront that CAC payback is 22 months and the burn multiple is 2.1x, and show enterprise cohort payback and retention if you have them.",
+          "Action: describe how you will shift spend toward what is working in enterprise, and which efficiency milestones you will show investors before launching."
+        ],
+        "trap_to_avoid": "Leading with logo growth as proof the company is healthy without addressing payback and burn efficiency, which sounds like avoiding the harder numbers."
+      }
+    ],
+    "created": "2026-11-10T15:29:04+00:00"
+  },
+  "braintrust/eee94d964d33ab60:66e5af07193a949c": {
+    "task": "braintrust/eee94d964d33ab60",
+    "model": "claude-sonnet-5-5",
+    "run_id": "9f9fa6d77034",
+    "output": {
+      "Q10": {
+        "title": "Is our enterprise traction repeatable while net new ARR falls?",
+        "question": "We're a Series C B2B SaaS company at $25\u201350M ARR. Enterprise logos are up 40\u201350% year over year, yet net new ARR is down and we missed plan by 20\u201325% for 2 quarters. How did you test whether your enterprise motion was repeatable, with a defined buyer, sales cycle and expansion path, rather than a handful of good deals? If you concluded it was real, what did you reallocate to scale it, and what would you do differently?"
+      }
+    },
+    "created": "2026-11-10T15:29:18+00:00"
+  },
+  "consensus/486ada8dbe692b73:d9657d0b92f18af8": {
+    "task": "consensus/486ada8dbe692b73",
+    "model": "claude-sonnet-5-5",
+    "run_id": "9f9fa6d77034",
+    "output": {
+      "Q9": {
+        "headline": "Peers stopped defending an overage as 'growth' by splitting it into one-off and structural costs with a margin bridge, and by testing the claim against unit cost.",
+        "points": [
+          {
+            "text": "Peers built a bridge from the prior margin through each driver. One Series D DevTools CFO tagged duplicate-run costs separately with an end date, so the board could see roughly 2 of a 3-point decline had a decommission date. A Series C Security CFO brought the bridge so the discussion stayed on drivers rather than on whether finance had missed it.",
+            "thread_ids": [
+              "BT-1021",
+              "BT-1025"
+            ],
+            "approach": "margin_bridge_one_off_vs_structural",
+            "count": {
+              "replies": 3,
+              "of": 10,
+              "label": "built a margin bridge separating one-off from structural costs"
+            }
+          },
+          {
+            "text": "Peers asked for hosting cost per customer or per unit of usage to settle the 'it's just growth' argument. If unit cost is flat and margin fell, the cause is mix or pricing rather than infrastructure. If unit cost is rising, it isn't growth.",
+            "thread_ids": [
+              "BT-1021",
+              "BT-1022"
+            ],
+            "approach": "unit_cost_metric",
+            "count": {
+              "replies": 2,
+              "of": 10,
+              "label": "tracked hosting cost per customer or unit"
+            }
+          },
+          {
+            "text": "On the cuts themselves, one Series C Data infrastructure CFO named a single engineer as FinOps owner with a quarterly target. Rightsizing and storage tiering then delivered 15% in two quarters. The CFO's view was that without an owner nothing happened.",
+            "thread_ids": [
+              "BT-1022"
+            ],
+            "approach": "finops_owner",
+            "count": {
+              "replies": 1,
+              "of": 10,
+              "label": "named an owner for cloud cost"
+            }
+          }
+        ],
+        "split": {
+          "text": "A pre-IPO Fintech (payments) CFO pushed back on calling migration costs one-off, because in their case 'temporary' lasted five quarters. They would present half as structural until the shutdown actually happens.",
+          "thread_ids": [
+            "BT-1021"
+          ]
+        },
+        "stage_note": "Most replies came from Series C CFOs, and the one-off framing comes from migration situations, so it only transfers if the overage has a dated, identifiable cause.",
+        "dropped": []
+      },
+      "Q10": {
+        "headline": "Peers made good news credible by proving it was repeatable, arguing against it themselves, and attaching a decision to it.",
+        "points": [
+          {
+            "text": "Peers showed the number of deals, not just dollars, and how many came from the new motion versus one-off relationships. A pre-IPO Martech CFO also brought the counter-evidence unprompted ('here's why it might be luck, and here's why we think it isn't'), because directors trust a CFO who argues against themselves.",
+            "thread_ids": [
+              "BT-1062"
+            ],
+            "approach": "prove_repeatability",
+            "count": {
+              "replies": 2,
+              "of": 3,
+              "label": "proved the good news was repeatable"
+            }
+          },
+          {
+            "text": "One Series D Security CFO put the good news after the problems, never before, and attached an ask: 'this is working, here's what more investment would do'. Their view was that good news with a decision attached isn't spin.",
+            "thread_ids": [
+              "BT-1062"
+            ],
+            "approach": "good_news_after_bad",
+            "count": {
+              "replies": 1,
+              "of": 3,
+              "label": "put the good news after the problems, with an ask attached"
+            }
+          }
+        ],
+        "split": null,
+        "stage_note": "The advice came from Series C, Series D and pre-IPO CFOs without stage-specific differences, but it covers how to present good news and none of it addresses enterprise buyer, sales cycle or expansion mechanics.",
+        "dropped": []
+      }
+    },
+    "created": "2026-11-10T15:29:30+00:00"
+  },
+  "consensus/9ac6bc9dd355237f:cf7f02c6298f3703": {
+    "task": "consensus/9ac6bc9dd355237f",
+    "model": "claude-sonnet-5-5",
+    "run_id": "9f9fa6d77034",
+    "output": {
+      "Q1": {
+        "headline": "Peers split between extending runway first so they could raise on an improving trend, and starting the raise early with 18+ months in hand because the process runs long.",
+        "points": [
+          {
+            "text": "One Series D data infrastructure CFO started with 20 months and closed with 14, because processes take longer than expected. Starting at 17 would have left too little runway to negotiate from.",
+            "thread_ids": [
+              "BT-1051"
+            ],
+            "approach": "raise_with_18_plus_months",
+            "count": {
+              "replies": 2,
+              "of": 13,
+              "label": "started the raise with 18+ months of runway"
+            }
+          },
+          {
+            "text": "A Series C HR tech CFO cut first to bring burn multiple down and runway to 24 months, then raised two quarters later on an improving trend and got better terms. A Series D security CFO agreed: investors price the trend, and two quarters of improving efficiency was worth more than the extra months of process time.",
+            "thread_ids": [
+              "BT-1051"
+            ],
+            "approach": "cut_to_extend_then_raise",
+            "count": {
+              "replies": 2,
+              "of": 13,
+              "label": "cut burn to extend runway, then raised on an improving trend"
+            }
+          },
+          {
+            "text": "One Series C marketplace CFO advised asking existing investors now whether they would lead an insider round or a bridge, because knowing the answer changes the whole plan.",
+            "thread_ids": [
+              "BT-1051"
+            ],
+            "approach": "insider_bridge_option",
+            "count": {
+              "replies": 1,
+              "of": 13,
+              "label": "took or explored an insider round or bridge"
+            }
+          }
+        ],
+        "split": {
+          "text": "A pre-IPO fintech CFO pushed back on cutting first: it assumes the cuts land on schedule, theirs didn't, and they started the raise at 13 months with a worse story, so they advise starting investor conversations now, even informally.",
+          "thread_ids": [
+            "BT-1051"
+          ]
+        },
+        "stage_note": null,
+        "dropped": []
+      },
+      "Q2": {
+        "headline": "Peers rebuilt forecast credibility by rebasing bottom-up from pipeline and historical conversion, showing the board the method, and saying plainly that the second plan should have moved.",
+        "points": [
+          {
+            "text": "A Series D martech CFO rebased the plan from pipeline and historical conversion, showed the board the method as well as the number, and came in slightly above the rebased figure the next quarter. A pre-IPO security CFO moved forecast ownership from sales leadership to FP&A to remove bias, separating the people who build the forecast from the people measured on it.",
+            "thread_ids": [
+              "BT-1041"
+            ],
+            "approach": "rebase_bottom_up",
+            "count": {
+              "replies": 2,
+              "of": 9,
+              "label": "rebuilt the forecast bottom-up from pipeline and conversion"
+            }
+          },
+          {
+            "text": "A Series C marketplace CFO said plainly that the second plan should have moved after the first miss and didn't. They found that admission did more for trust than any slide.",
+            "thread_ids": [
+              "BT-1041"
+            ],
+            "approach": "own_the_miss",
+            "count": {
+              "replies": 1,
+              "of": 9,
+              "label": "owned the miss plainly and named the process fix"
+            }
+          },
+          {
+            "text": "On thin coverage, peers weighted pipeline by stage using the last four quarters' conversion rather than sales' gut feel. One reported it came out lower than the raw ratio suggested. A Series D CFO showed both views: historical stage-by-stage conversion and the bookings it implies.",
+            "thread_ids": [
+              "BT-1031"
+            ],
+            "approach": "conversion_adjusted_coverage",
+            "count": {
+              "replies": 2,
+              "of": 9,
+              "label": "judged pipeline on stage-by-stage conversion, not the raw coverage ratio"
+            }
+          }
+        ],
+        "split": {
+          "text": "Peers disagreed on how far to reset: one Series B CFO warned against sandbagging because a board can tell and a 30% beat erodes trust differently, while a Series C security CFO would lower the quarter's number now if coverage is under 85% of target, having regretted trusting 'win rates are up'.",
+          "thread_ids": [
+            "BT-1041",
+            "BT-1031"
+          ]
+        },
+        "stage_note": null,
+        "dropped": []
+      },
+      "Q3": {
+        "headline": "Peers first split NRR into churn, contraction and expansion to show the problem was stalled expansion, then used segment and cohort cuts to find the cause and committed to a recovery number with a date.",
+        "points": [
+          {
+            "text": "Peers put flat GRR and falling NRR on one chart, so the gap reads as expansion, or opened with a quarterly bridge that moves the debate to why upsell stalled. A Series D martech CFO added contraction as its own line and found some apparent no-expansion was quiet downgrades at renewal. Peers also warned against blaming the market: if GRR held, customers still see value and the company stopped selling them more.",
+            "thread_ids": [
+              "BT-1001",
+              "BT-1006"
+            ],
+            "approach": "split_churn_vs_expansion",
+            "count": {
+              "replies": 3,
+              "of": 12,
+              "label": "split retention into churn, contraction and expansion"
+            }
+          },
+          {
+            "text": "Peers located the cause before choosing a fix. Blended NRR hid the problem: one found mid-market 2023 cohorts flattening after first seat expansion while enterprise was fine, and another found a newer cohort expanding at half the rate of an older one, pointing to onboarding rather than pricing. On pricing versus product, one Series D CFO tested pricing first because it is faster: they moved two features from Pro to Enterprise, raised list 12%, and expansion recovered within two quarters. Others found product causes: 30% fewer active users on the second module, and a missing integration found by reading CSM notes on the accounts with the biggest slowdown.",
+            "thread_ids": [
+              "BT-1001",
+              "BT-1002"
+            ],
+            "approach": null,
+            "count": null
+          },
+          {
+            "text": "One Series C security CFO advised giving a number, a quarter and the leading indicator the board will see first, for example 'back above 112% by Q3 next year'. The point was that boards forgive the drop but not a vague recovery.",
+            "thread_ids": [
+              "BT-1001"
+            ],
+            "approach": "reset_target_with_date",
+            "count": {
+              "replies": 1,
+              "of": 12,
+              "label": "committed to a target or range with a date and leading indicators"
+            }
+          }
+        ],
+        "split": {
+          "text": "Peers disagreed on presentation and remedy: one Series C CFO with an operator-heavy board led with the customer story before the bridge, and a pre-IPO security CFO warned that a price increase into a slowdown can look like squeezing customers, so they repackaged instead of raising list.",
+          "thread_ids": [
+            "BT-1001",
+            "BT-1002"
+          ]
+        },
+        "stage_note": null,
+        "dropped": []
+      },
+      "Q4": {
+        "headline": "Peers ended the volume-versus-quality argument by auditing the funnel by source, segment and stage, then judging pipeline on trailing stage conversion rather than the raw coverage ratio.",
+        "points": [
+          {
+            "text": "A Series C fintech CFO built a funnel by source and segment for four quarters with stage conversion. It took a week and showed the issue was mid-market volume, not conversion. A Series D CFO read ten lost and ten won deals and said the board likes hearing you did it yourself. A Series B marketplace CFO removed 20% of pipeline by purging deals past close date, with no next step, or single-threaded.",
+            "thread_ids": [
+              "BT-1031",
+              "BT-1032"
+            ],
+            "approach": "pipeline_quality_audit",
+            "count": {
+              "replies": 3,
+              "of": 10,
+              "label": "audited pipeline quality by source and stage"
+            }
+          },
+          {
+            "text": "Peers weighted pipeline by stage using trailing four-quarter conversion rather than sales' view, and one found the result lower than raw coverage suggested. A Series D CFO assumed no conversion improvement in the plan, so any improvement had to be a named initiative with its own line.",
+            "thread_ids": [
+              "BT-1031",
+              "BT-1034"
+            ],
+            "approach": "conversion_adjusted_coverage",
+            "count": {
+              "replies": 3,
+              "of": 10,
+              "label": "judged pipeline on stage-by-stage conversion, not the raw coverage ratio"
+            }
+          },
+          {
+            "text": "A Series C vertical SaaS CFO gave marketing and sales one shared pipeline target. The volume-versus-quality fight stopped because both were measured on the same number.",
+            "thread_ids": [
+              "BT-1032"
+            ],
+            "approach": "shared_pipeline_target",
+            "count": {
+              "replies": 1,
+              "of": 10,
+              "label": "gave sales and marketing one shared pipeline target"
+            }
+          }
+        ],
+        "split": {
+          "text": "Peers disagreed on whether trailing conversion is a safe baseline: two Series C CFOs would lower the number, one if coverage is under 85% of target and one because trailing rates came from a better pipeline than the current one, while others planned at trailing rates, one with a stretch case and spend managed to the lower one.",
+          "thread_ids": [
+            "BT-1031",
+            "BT-1034"
+          ]
+        },
+        "stage_note": null,
+        "dropped": []
+      }
+    },
+    "created": "2026-11-10T15:29:49+00:00"
+  },
+  "consensus/aed06b734adafd9e:56fa06bc5036076b": {
+    "task": "consensus/aed06b734adafd9e",
+    "model": "claude-sonnet-5-5",
+    "run_id": "9f9fa6d77034",
+    "output": {
+      "Q5": {
+        "headline": "Peers made a specific first cut in spend that wasn't producing pipeline and agreed triggers with the board for the next ones, so later decisions weren't ad hoc.",
+        "points": [
+          {
+            "text": "For the first cut, a Series C HR tech peer tied every marketing program to sourced pipeline for two quarters and cut the bottom third. That was about 8% of opex with no impact on bookings. A Series C marketplace peer found about $400K a year in overlapping software, which bought credibility for harder conversations.",
+            "thread_ids": [
+              "BT-1011"
+            ],
+            "approach": null,
+            "count": null
+          },
+          {
+            "text": "On the trigger for next steps, a Series C lending fintech set two triggers: burn multiple above 2x for two quarters, or runway under 18 months. Either one forced an automatic plan review. Peers said this took the emotion out of the discussion and meant the board was never surprised.",
+            "thread_ids": [
+              "BT-1016"
+            ],
+            "approach": "pre_agreed_triggers",
+            "count": {
+              "replies": 3,
+              "of": 11,
+              "label": "pre-agreed spending triggers with the board"
+            }
+          },
+          {
+            "text": "Peers split the burn multiple on the slide into spend versus net new ARR. This moves the board from a spending problem to a growth problem. A Series C HR tech peer warned that 'we didn't spend more' is not a defense: flat spend with falling growth means the spend is less productive, so you need a view on which spend. A growth-stage fintech peer paired the split with a table of net new ARR per S&M dollar by segment.",
+            "thread_ids": [
+              "BT-1012"
+            ],
+            "approach": "decompose_numerator_denominator",
+            "count": {
+              "replies": 2,
+              "of": 11,
+              "label": "split the burn number into spend vs growth on the slide"
+            }
+          }
+        ],
+        "split": {
+          "text": "Peers disagreed on pace and design: a Series B peer said slow trims over three quarters were 'death by a thousand cuts' and one decisive reduction was better, and a Series D peer said triggers need room because theirs fired on a one-off quarter and cost a meeting arguing whether it 'counted' (use a two-quarter rule).",
+          "thread_ids": [
+            "BT-1011",
+            "BT-1016"
+          ]
+        },
+        "stage_note": null,
+        "dropped": []
+      },
+      "Q6": {
+        "headline": "Peers rebuilt trust by rebasing the plan bottom-up from pipeline and conversion, showing the method, and then sizing spend to the rebased plan rather than the old one.",
+        "points": [
+          {
+            "text": "A Series D martech peer rebased from pipeline and historical conversion and showed the board the method, not just the number. They landed slightly above the rebased figure the next quarter. A growth-stage security peer moved forecast ownership from sales leadership to FP&A to remove bias. A Series C marketplace peer said plainly that the second plan should have moved after the first miss and didn't, and that admission did more than any slide.",
+            "thread_ids": [
+              "BT-1041"
+            ],
+            "approach": "rebase_bottom_up",
+            "count": {
+              "replies": 2,
+              "of": 12,
+              "label": "rebuilt the forecast bottom-up from pipeline and conversion"
+            }
+          },
+          {
+            "text": "Peers took two routes on spend that had been hired to a plan that missed. A Series D HR tech peer used a hiring freeze with attrition, which reached 8% in three quarters at their attrition rate, and warned that low attrition makes a freeze too slow. A Series C data infrastructure peer made one 9% reduction because the plan they hired to was never coming back, and said boards respect a CFO who says that out loud.",
+            "thread_ids": [
+              "BT-1014"
+            ],
+            "approach": null,
+            "count": null
+          },
+          {
+            "text": "'Spend was on budget' did not work as a defense. A Series C HR tech peer said flat spend with falling growth means the spend is less productive, and you need a view on which spend. A growth-stage fintech peer showed net new ARR per S&M dollar by segment to locate where productivity fell.",
+            "thread_ids": [
+              "BT-1012"
+            ],
+            "approach": null,
+            "count": null
+          }
+        ],
+        "split": {
+          "text": "Two peers pushed back on tone: a Series B peer warned against overcorrecting into a sandbagged plan, since a board can tell and a large beat of a low number erodes trust differently, and a growth-stage security peer said not to use 'we hired to the plan' as cover, but to own the plan miss and let the headcount decision follow.",
+          "thread_ids": [
+            "BT-1041",
+            "BT-1014"
+          ]
+        },
+        "stage_note": null,
+        "dropped": []
+      },
+      "Q7": {
+        "headline": "Peers presented retention as a bridge broken out by segment and cohort with a dated recovery target, and raised either with 18+ months of runway or after cutting to show an improving trend.",
+        "points": [
+          {
+            "text": "Peers opened with a bridge of starting ARR, churn, contraction and expansion by quarter. One Series C peer charted GRR and NRR on one line each so the gap was visibly expansion. A Series D martech peer added contraction as its own line, because some apparent 'no expansion' was quiet downgrades at renewal. In these threads GRR had held, which let peers move the debate from churn to stalled upsell. Two peers also said not to blame 'the market'.",
+            "thread_ids": [
+              "BT-1001",
+              "BT-1006"
+            ],
+            "approach": "split_churn_vs_expansion",
+            "count": {
+              "replies": 3,
+              "of": 13,
+              "label": "split retention into churn, contraction and expansion"
+            }
+          },
+          {
+            "text": "Peers said blended NRR hides the cause. A Series D peer found mid-market 2023 cohorts flattening after their first seat expansion while enterprise was fine. A Series B peer saw the 2024 cohort expanding at half the rate of 2022, which pointed at onboarding rather than pricing. A Series C security peer added that boards forgive the drop but not a vague recovery, and advised committing to a number, a quarter and the leading indicator that will move first.",
+            "thread_ids": [
+              "BT-1001"
+            ],
+            "approach": "segment_cohort_view",
+            "count": {
+              "replies": 2,
+              "of": 13,
+              "label": "broke NRR out by segment and cohort"
+            }
+          },
+          {
+            "text": "Peers differed on raise sequencing. A Series D peer started with 20 months and closed with 14, saying processes take longer than expected. A Series C HR tech peer and a Series D security peer cut first, with HR tech reaching 24 months of runway, then raised two quarters later on an improving trend and got better terms. A Series C marketplace peer advised asking existing investors now whether they would lead an insider round or a bridge.",
+            "thread_ids": [
+              "BT-1051"
+            ],
+            "approach": null,
+            "count": null
+          }
+        ],
+        "split": {
+          "text": "Peers disagreed on two things: a growth-stage fintech peer warned that 'cut first, then raise' assumes the cuts land on schedule (theirs didn't, and they started the raise at 13 months with a worse story, so they advised starting informal conversations now), and a Series C peer said an operator-heavy board wants the customer story before the bridge.",
+          "thread_ids": [
+            "BT-1051",
+            "BT-1001"
+          ]
+        },
+        "stage_note": null,
+        "dropped": []
+      },
+      "Q8": {
+        "headline": "Peers built a margin bridge that separated dated one-off costs from structural ones, and backed it with a unit-cost metric and a named owner.",
+        "points": [
+          {
+            "text": "A Series D DevTools peer built a bridge from last year's margin through each driver and tagged duplicate-run costs separately with an end date. The board could see roughly 2 of their 3 points of decline had a decommission date. A Series C security peer brought the bridge to an overrun that wasn't in the budget so the discussion stayed on drivers rather than whether finance missed it.",
+            "thread_ids": [
+              "BT-1021",
+              "BT-1025"
+            ],
+            "approach": "margin_bridge_one_off_vs_structural",
+            "count": {
+              "replies": 3,
+              "of": 10,
+              "label": "built a margin bridge separating one-off from structural costs"
+            }
+          },
+          {
+            "text": "Peers tracked hosting cost per customer or per unit of usage. A Series C security peer said that if unit cost is flat while margin fell, the cause is mix or pricing, not infrastructure. A Series D vertical SaaS peer said that if unit cost is rising, 'it's just growth' is not an answer, and that one metric ended the argument.",
+            "thread_ids": [
+              "BT-1021",
+              "BT-1022"
+            ],
+            "approach": "unit_cost_metric",
+            "count": {
+              "replies": 2,
+              "of": 10,
+              "label": "tracked hosting cost per customer or unit"
+            }
+          },
+          {
+            "text": "Peers tied 'temporary' to a date and an owner. A Series C peer put the old-stack shutdown on the board calendar as a milestone, because without a date the board hears 'permanent'. A Series C data infrastructure peer named one engineer as FinOps owner with a quarterly target, and rightsizing and storage tiering cut cloud spend 15% in two quarters. A Series C HR tech peer committed to a one-year spend floor at about 80% of run-rate and saved close to 20% on that portion.",
+            "thread_ids": [
+              "BT-1021",
+              "BT-1022"
+            ],
+            "approach": null,
+            "count": null
+          }
+        ],
+        "split": {
+          "text": "A growth-stage fintech peer cautioned against calling migration costs one-off: 'temporary' lasted five quarters for them, and they presented half as structural until the shutdown actually happened.",
+          "thread_ids": [
+            "BT-1021"
+          ]
+        },
+        "stage_note": null,
+        "dropped": []
+      }
+    },
+    "created": "2026-11-10T15:30:13+00:00"
+  }
+}

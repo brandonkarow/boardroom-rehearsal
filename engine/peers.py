@@ -200,6 +200,16 @@ def _numbers_in(text: str) -> set[float]:
     return {abs(v) for _, v, _, _ in extract(text)}
 
 
+def _as_items(obj, key: str) -> list[dict]:
+    """Accept the model's reply ({key: [...]}, or a bare list) and also our own checked
+    output ({"Q1": {...}}), so demo mode re-runs every check on cached results."""
+    if isinstance(obj, list):
+        return obj
+    if key in obj:
+        return obj[key]
+    return [dict(v, q_id=k) for k, v in obj.items()]
+
+
 COUNT_RE = re.compile(r"\b\d+\s+(?:of|out of)\s+(?:the\s+)?\d+\b|\b(?:one|two|three|four|five|six|seven|eight|nine|ten)"
                       r"\s+(?:of|out of)\s+(?:the\s+)?(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\b", re.I)
 
@@ -229,7 +239,7 @@ def make_consensus_validator(qids: list[str], allowed_threads: dict[str, list[st
     Counts are never taken from the AI: a point names an approach tag and code
     attaches that approach's count from the tally."""
     def validate(obj) -> dict:
-        items = obj["summaries"] if isinstance(obj, dict) else obj
+        items = _as_items(obj, "summaries")
         out = {}
         for s in items:
             qid = str(s.get("q_id"))
@@ -280,7 +290,7 @@ def make_draft_validator(qids: list[str], anon: dict[str, str]):
     band_numbers = set().union(*(_numbers_in(v) for v in anon.values())) if anon else set()
 
     def validate(obj) -> dict:
-        items = obj["drafts"] if isinstance(obj, dict) else obj
+        items = _as_items(obj, "drafts")
         out = {}
         for d in items:
             qid = str(d.get("q_id"))

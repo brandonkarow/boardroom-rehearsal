@@ -276,3 +276,38 @@ back**. Read every card as a board member would. Found:
   (the card is about NRR). Fix: a point change may match a code-computed change for any
   metric the card names. "GRR held, but there was a 9-point drop" still fails.
 - 107 tests pass.
+
+## 2026-11-10 — Peer layer verified live (Phase 5 checkpoint met)
+
+- 101 seconds end to end. 106 figures verified, nothing held back. 9 of 10 cards have close
+  peer coverage, and every card shows code-made counts ("2 of 3 replies proved the good
+  news was repeatable"). The checks dropped 0 AI points this run.
+- The enterprise card (one thread) shows peer insights plus an anonymous Braintrust draft,
+  built only from code ranges: "Series C B2B SaaS company at $25–50M ARR. Enterprise
+  logos are up 40–50%… missed plan by 20–25% for 2 quarters. How did you test whether
+  your enterprise motion was repeatable…?"
+- The AI flagged its own limits unprompted: "none of it addresses enterprise buyer,
+  sales cycle or expansion mechanics."
+- Brandon judged the thread library good enough for now. This run (7 AI outputs:
+  3 personas, 3 consensus batches, 1 draft) is the candidate demo cache.
+
+## 2026-11-10 — Phase 6: demo cache, mode switch, brief, polish
+
+- **Demo cache committed** (`demo_cache/cache.json`): Brandon saved the verified live run
+  (7 outputs, one run_id). **A test caught a replay bug before it shipped:** the cache
+  stores *checked* output, and the peer checks only accepted the AI's raw shape, so all
+  four peer batches failed in demo mode with KeyError. Fix: the checks accept their own
+  output, so demo mode re-runs every check on the cached run. New test: the committed
+  cache must replay the full experience with no key.
+- **Decision: a sidebar mode switch, "Instant demo (saved run)" as the default for the
+  sample, plus "Live AI run".** With a key in Streamlit Secrets, every reviewer click would
+  otherwise cost ~100 seconds and API credit. Demo mode states that it replays a saved live
+  run and re-checks it.
+- **Brief (.docx and .md). Correction (own): the first version ran 9 pages / 4,600 words**
+  against the build guide's "1–2 pages you'd hand a CFO". Restructured: pages 1–2 are
+  "the hard 10 at a glance" (question · say · avoid · what peers did); full outlines, peer
+  points with code counts and citations, and Braintrust drafts move to an appendix after a
+  page break. Checked by rendering the .docx to PDF and looking at the pages.
+- **First 60 seconds:** one-line value proposition, a four-step "how it works" line, and a
+  "try it in 60 seconds" prompt on the empty state.
+- 113 tests pass.
