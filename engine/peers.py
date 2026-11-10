@@ -36,6 +36,7 @@ DIRECT_CLOSE = 0.12        # question text alone vs best thread: below this, pee
 RELATIVE_FLOOR = 0.5
 DIRECT_WEIGHT = 0.5        # weight of the question's own words in the ranking
 TOPIC_BOOST = 0.08         # added when a thread's topic matches the main signal's peer_topic
+MIN_THREADS_CLOSE = 2      # fewer threads than this counts as thin coverage (draft offered)
 BATCH_SIZE = 4             # questions per consensus call; batches run in parallel
 COMPANY_NAMES = ["northbeam"]
 
@@ -111,10 +112,12 @@ def match(question, report: SignalReport, k: int = TOP_THREADS,
 
 
 def coverage(hits: list[Match]) -> str:
-    """'close' = peers discussed this question; 'topic' = the area, not this exact
-    question; 'none' = nothing relevant."""
+    """'close' = peers discussed this question in at least two threads; 'topic' = the
+    area but not this exact question, or only one thread; 'none' = nothing relevant."""
     if not hits:
         return "none"
+    if len(hits) < MIN_THREADS_CLOSE:          # one thread is thin evidence, however close
+        return "topic"
     return "close" if max(h.direct for h in hits) >= DIRECT_CLOSE else "topic"
 
 
@@ -197,23 +200,34 @@ def _numbers_in(text: str) -> set[float]:
     return {abs(v) for _, v, _, _ in extract(text)}
 
 
-def _allowed_peer_numbers(thread_ids: list[str], facts: dict) -> set[float]:
-    by_id = threads_by_id()
-    nums = {float(facts["replies"]), float(facts["threads"]), float(facts["pushback_replies"])}
-    for a in facts["approaches"]:
-        nums |= {float(a["replies"]), float(a["of"]), float(len(a["thread_ids"]))}
-    nums |= {float(n) for n in facts["stages"].values()}
+COUNT_RE = re.compile(r"\b\d+\s+(?:of|out of)\s+(?:the\s+)?\d+\b|\b(?:one|two|three|four|five|six|seven|eight|nine|ten)"
+                      r"\s+(?:of|out of)\s+(?:the\s+)?(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\b", re.I)
+
+
+def _allowed_peer_numbers(thread_ids: list[str]) -> set[float]:
+    """Figures the AI may quote: those in the retrieved threads and in their approach labels."""
+    lib, by_id = load_library(), threads_by_id()
+    nums: set[float] = set()
     for tid in thread_ids:
-        nums |= _numbers_in(_thread_doc(by_id[tid]))
+        t = by_id[tid]
+        nums |= _numbers_in(_thread_doc(t))
+        nums |= set().union(*(_numbers_in(lib["approaches"][r["approach"]]) for r in t["replies"]))
     return nums
 
 
-def _check_numbers(text: str, allowed: set[float]) -> list[str]:
-    return [raw for raw, v, _, _ in extract(text) if not any(abs(abs(v) - a) < 1e-6 for a in allowed)]
+def _text_problem(text: str, allowed: set[float]) -> str | None:
+    if COUNT_RE.search(text):
+        return "wrote a count itself (counts come from code)"
+    bad = [raw for raw, v, _, _ in extract(text) if not any(abs(abs(v) - a) < 1e-6 for a in allowed)]
+    return f"figure not in the threads: {', '.join(bad)}" if bad else None
 
 
 def make_consensus_validator(qids: list[str], allowed_threads: dict[str, list[str]],
                              facts: dict[str, dict]):
+    """Keep only points that cite retrieved threads and quote only their figures.
+
+    Counts are never taken from the AI: a point names an approach tag and code
+    attaches that approach's count from the tally."""
     def validate(obj) -> dict:
         items = obj["summaries"] if isinstance(obj, dict) else obj
         out = {}
@@ -222,26 +236,39 @@ def make_consensus_validator(qids: list[str], allowed_threads: dict[str, list[st
             if qid not in allowed_threads:
                 continue
             ok_ids = set(allowed_threads[qid])
-            allowed_nums = _allowed_peer_numbers(allowed_threads[qid], facts[qid])
-            points = []
+            allowed_nums = _allowed_peer_numbers(allowed_threads[qid])
+            tally_by = {a["approach"]: a for a in facts[qid]["approaches"]}
+            points, dropped = [], []
             for p in s.get("points", []):
                 ids = [t for t in p.get("thread_ids", []) if t in ok_ids]
                 text = str(p.get("text", "")).strip()
-                if ids and text and not _check_numbers(text, allowed_nums):
-                    points.append({"text": text, "thread_ids": ids})
+                appr = p.get("approach")
+                problem = (None if ids else "cited no retrieved thread") or (None if text else "empty") \
+                    or _text_problem(text, allowed_nums) \
+                    or (None if appr in (None, "") or appr in tally_by else f"unknown approach {appr}")
+                if problem:
+                    dropped.append(problem)
+                    continue
+                count = None
+                if appr:
+                    a = tally_by[appr]
+                    count = {"replies": a["replies"], "of": a["of"], "label": a["label"]}
+                    ids = sorted(set(ids) | set(a["thread_ids"]))
+                points.append({"text": text, "thread_ids": ids, "approach": appr or None, "count": count})
             if not points:
-                raise ValueError(f"summary for {qid} has no point citing a retrieved thread with valid counts")
+                raise ValueError(f"summary for {qid} has no usable point ({'; '.join(dropped) or 'none given'})")
             split = s.get("split")
             if split:
                 ids = [t for t in split.get("thread_ids", []) if t in ok_ids]
                 text = str(split.get("text", "")).strip()
-                split = {"text": text, "thread_ids": ids} if ids and text and not _check_numbers(text, allowed_nums) else None
+                split = {"text": text, "thread_ids": ids} if ids and text and not _text_problem(text, allowed_nums) else None
             headline = str(s.get("headline", "")).strip()
-            if _check_numbers(headline, allowed_nums):
+            if headline and _text_problem(headline, allowed_nums):
                 headline = ""
             note = s.get("stage_note")
-            note = str(note).strip() if note and not _check_numbers(str(note), allowed_nums) else None
-            out[qid] = {"headline": headline, "points": points, "split": split, "stage_note": note}
+            note = str(note).strip() if note and not _text_problem(str(note), allowed_nums) else None
+            out[qid] = {"headline": headline, "points": points, "split": split, "stage_note": note,
+                        "dropped": dropped}
         missing = [q for q in qids if q not in out]
         if missing:
             raise ValueError(f"missing summaries for {missing}")

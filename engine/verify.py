@@ -105,6 +105,7 @@ class Allowed:
     family: str
     source: str
     threshold: bool = False
+    delta: bool = False      # a change ("down 9 points"), not a level
 
 
 @dataclass
@@ -137,9 +138,9 @@ def allowed_numbers(pack: KPIPack, report: SignalReport, bva: pd.DataFrame | Non
                     rules: dict | None = None) -> list[Allowed]:
     out: list[Allowed] = []
 
-    def add(v, cat, fam, src, threshold=False):
+    def add(v, cat, fam, src, threshold=False, delta=False):
         if v is not None and not pd.isna(v):
-            out.append(Allowed(float(v), cat, fam, src, threshold))
+            out.append(Allowed(float(v), cat, fam, src, threshold, delta))
 
     for _, row in pack.df.iterrows():
         for col, (name, unit) in METRIC_INFO.items():
@@ -150,7 +151,7 @@ def allowed_numbers(pack: KPIPack, report: SignalReport, bva: pd.DataFrame | Non
         cat, fam = UNIT_CAT.get(t["unit"], "count"), FAMILY[t["metric"]]
         for k in ("qoq", "yoy"):
             if not pd.isna(t.get(f"{k}_change")):
-                add(t[f"{k}_change"], cat, fam, f"{t['name']} {k.upper()} change")
+                add(t[f"{k}_change"], cat, fam, f"{t['name']} {k.upper()} change", delta=True)
             if not pd.isna(t.get(f"{k}_change_pct")):
                 add(t[f"{k}_change_pct"], "pct", fam, f"{t['name']} {k.upper()} % change")
 
@@ -168,7 +169,7 @@ def allowed_numbers(pack: KPIPack, report: SignalReport, bva: pd.DataFrame | Non
                 continue            # "2 quarters running" is a count, handled by TIME_WORDS
             else:
                 cat = metric_cat
-            add(v, cat, fam, f"{f.id}.{k}")
+            add(v, cat, fam, f"{f.id}.{k}", delta=k in ("delta", "abs_delta"))
 
     for _, t in trends(pack).iterrows():           # runs of quarters, e.g. margin down 3 in a row
         if t.get("streak"):
@@ -277,8 +278,14 @@ def _compatible(fig: Figure, a: Allowed) -> bool:
     return fig.cat is None or a.cat == fig.cat
 
 
+POINT_CHANGE = re.compile(r"(?:pts?|points?)$", re.I)
+
+
 def verify_text(text: str, allowed: list[Allowed]) -> Verification:
     res = Verification()
+    # Metrics the whole card talks about: a "9-point drop" in a sentence that only names
+    # GRR may refer to the card's NRR. Used only as a second chance for point changes.
+    card_families = {KW_FAMILY[m.group(1).lower()] for m in KW_RE.finditer(text)}
     for sentence in SENTENCE_RE.split(text):
         mentions = [(m.start(), m.end(), KW_FAMILY[m.group(1).lower()]) for m in KW_RE.finditer(sentence)]
         for fig in _figures(sentence):
@@ -301,6 +308,9 @@ def verify_text(text: str, allowed: list[Allowed]) -> Verification:
                 hit = _match_in(fig, [a for a in allowed if _compatible(fig, a)])
             if hit is None and _referenced(fig):  # "two misses beyond 10%": a rule's own line
                 hit = _match_in(fig, [a for a in allowed if a.threshold and _compatible(fig, a)])
+            if hit is None and fig.cat == "pct" and POINT_CHANGE.search(fig.raw):
+                hit = _match_in(fig, [a for a in allowed if a.delta and a.cat == "pct"
+                                      and a.family in card_families])
             res.checks.append(Check(
                 text=fig.raw, value=fig.value, cat=fig.cat, ok=hit is not None, family=family,
                 source=hit.source if hit else

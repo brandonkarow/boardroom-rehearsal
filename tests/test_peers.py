@@ -68,6 +68,12 @@ def test_live_questions_never_retrieve_off_topic_threads(pack, report, tmp_path)
     assert enterprise and all(coverage(match(q, report)[0]) == "topic" for q in enterprise)
 
 
+def test_single_thread_is_thin_coverage():
+    from engine.peers import Match
+    assert coverage([Match("BT-1062", "t", 0.5, direct=0.3)]) == "topic"
+    assert coverage([Match("BT-1001", "t", 0.5, 0.3), Match("BT-1006", "t", 0.4, 0.2)]) == "close"
+
+
 # ---- Code-computed facts -----------------------------------------------------------
 
 def test_tally_counts_replies():
@@ -100,11 +106,29 @@ def _summary(points, split=None):
                            "points": points, "split": split, "stage_note": None}]}
 
 
-def test_consensus_accepts_code_counts_and_quoted_figures(consensus_validator):
+def test_consensus_counts_come_from_code_not_the_ai(consensus_validator):
     out = consensus_validator(_summary([
-        {"text": "3 of 8 replies split retention into churn and expansion.", "thread_ids": ["BT-1001", "BT-1006"]},
-        {"text": "One CFO moved from roughly 117% to 109% and showed GRR flat first.", "thread_ids": ["BT-1001"]}]))
-    assert len(out["Q1"]["points"]) == 2
+        {"approach": "split_churn_vs_expansion", "text": "Peers showed GRR flat against falling NRR on one chart.",
+         "thread_ids": ["BT-1006"]},
+        {"approach": None, "text": "One CFO moved from roughly 117% to 109% and showed GRR flat first.",
+         "thread_ids": ["BT-1001"]}]))
+    p0, p1 = out["Q1"]["points"]
+    assert p0["count"] == {"replies": 3, "of": 8, "label": "split retention into churn, contraction and expansion"}
+    assert p0["thread_ids"] == ["BT-1001", "BT-1006"]          # code adds every thread with that approach
+    assert p1["count"] is None
+
+
+@pytest.mark.parametrize("text", [
+    "7 of 9 CFOs led with cohort data.",                         # invented count
+    "3 of 8 replies split retention.",                           # even a TRUE count: counting is code's job
+    "Two of the eight peers split retention.",
+])
+def test_consensus_drops_any_count_the_ai_writes(consensus_validator, text):
+    out = consensus_validator(_summary([
+        {"approach": None, "text": text, "thread_ids": ["BT-1001"]},
+        {"approach": None, "text": "Peers showed GRR and NRR on one chart.", "thread_ids": ["BT-1006"]}]))
+    assert [p["text"] for p in out["Q1"]["points"]] == ["Peers showed GRR and NRR on one chart."]
+    assert out["Q1"]["dropped"] == ["wrote a count itself (counts come from code)"]
 
 
 def test_consensus_drops_points_citing_threads_it_was_not_given(consensus_validator):
@@ -114,15 +138,22 @@ def test_consensus_drops_points_citing_threads_it_was_not_given(consensus_valida
     assert [p["text"] for p in out["Q1"]["points"]] == ["Peers led with cohorts."]
 
 
-def test_consensus_drops_invented_counts(consensus_validator):
-    out = consensus_validator(_summary([
-        {"text": "7 of 9 CFOs led with cohort data.", "thread_ids": ["BT-1001"]},  # code never counted 7 or 9
-        {"text": "Peers showed GRR and NRR on one chart.", "thread_ids": ["BT-1006"]}]))
-    assert [p["text"] for p in out["Q1"]["points"]] == ["Peers showed GRR and NRR on one chart."]
+def test_consensus_allows_figures_from_approach_labels():
+    # Live run 5: "start with 18+ months" was dropped because 18 appears only in the label.
+    ids = ["BT-1051"]
+    v = make_consensus_validator(["Q1"], {"Q1": ids}, {"Q1": tally(ids)})
+    out = v(_summary([{"approach": "raise_with_18_plus_months",
+                       "text": "Peers started with 18+ months, since processes run long.", "thread_ids": ids}]))
+    assert out["Q1"]["points"][0]["count"]["replies"] == 2
+
+
+def test_consensus_rejects_unknown_approach(consensus_validator):
+    with pytest.raises(ValueError, match="unknown approach"):
+        consensus_validator(_summary([{"approach": "made_up", "text": "x", "thread_ids": ["BT-1001"]}]))
 
 
 def test_consensus_with_no_valid_point_is_rejected(consensus_validator):
-    with pytest.raises(ValueError, match="no point citing"):
+    with pytest.raises(ValueError, match="no usable point"):
         consensus_validator(_summary([{"text": "Peers agree.", "thread_ids": ["BT-9999"]}]))
 
 

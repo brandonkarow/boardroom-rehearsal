@@ -144,11 +144,15 @@ def render_peers(q) -> None:
         if s["headline"]:
             st.markdown(f"**{esc(s['headline'])}**")
         for pt in s["points"]:
-            st.markdown(f"- {esc(pt['text'])} {cite(pt['thread_ids'])}")
+            c = pt.get("count")
+            lead = f"**{c['replies']} of {c['of']} replies** {esc(c['label'])}. " if c else ""
+            st.markdown(f"- {lead}{esc(pt['text'])} {cite(pt['thread_ids'])}")
         if s.get("split"):
             st.markdown(f"**Where peers disagree:** {esc(s['split']['text'])} {cite(s['split']['thread_ids'])}")
         if s.get("stage_note"):
             st.markdown(f"*{esc(s['stage_note'])}*")
+        st.caption("Counts in bold are computed in code from reply tags; the AI wrote the sentences."
+                   + (f" {len(s['dropped'])} AI point(s) dropped by the checks." if s.get("dropped") else ""))
     if p.matches:
         with st.popover("Read the peer threads (synthetic)"):
             for m in p.matches:

@@ -11,17 +11,17 @@ Inputs per question (all computed or retrieved by code):
 
 Write for each question:
 - headline: one sentence, the single most useful thing peers did.
-- points: 2–3 points. Each says what peers did and why, cites the thread_ids it
-  comes from, and may give a count ONLY as it appears in approach_counts
-  (e.g. "4 of 11 replies ..."). Prefer specifics from the replies over generalities.
+- points: 2–3 points. Each says what peers did and why, with specifics from the
+  replies, and cites the thread_ids it comes from. If the point is about one
+  approach in approach_counts, put its tag in "approach": code will show the count
+  next to your text. Never write counts yourself ("3 of 10", "two of the twelve").
 - split: if any reply pushed back, one sentence on the disagreement and the reason
   given, with its thread_ids. Otherwise null.
 - stage_note: one sentence if the advice depends on stage or industry, else null.
 
 Rules
 - Only cite thread_ids that appear in that question's threads.
-- Numbers: only counts from approach_counts, or figures quoted in the replies.
-  Never compute a percentage or total yourself.
+- Numbers: only figures quoted in the replies. Never count, total or compute.
 - Don't invent consensus: if replies disagree, say so. Don't mention the company's
   own figures; these are peers' experiences.
 - Write about peers in the third person ("peers", "one Series D CFO"). No names.
@@ -31,5 +31,5 @@ INPUT
 
 OUTPUT
 Return only JSON:
-{{"summaries": [{{"q_id": "Q1", "headline": "...", "points": [{{"text": "...", "thread_ids": ["BT-...."]}}],
+{{"summaries": [{{"q_id": "Q1", "headline": "...", "points": [{{"approach": "tag or null", "text": "...", "thread_ids": ["BT-...."]}}],
 "split": {{"text": "...", "thread_ids": ["BT-...."]}} or null, "stage_note": "..." or null}}]}}

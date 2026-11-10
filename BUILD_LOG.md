@@ -252,3 +252,27 @@ back**. Read every card as a board member would. Found:
   second visible step ("Finding how peer CFOs handled each one…").
 - 101 tests pass, including attacks on every guardrail: a citation to a non-retrieved
   thread, an invented "7 of 9 CFOs", and drafts containing "Northbeam", "109%" or "$48M".
+
+## 2026-11-10 — First live run of the peer layer (agent read every summary)
+
+- **92 seconds end to end** (about 45s questions + 45s peers). 10 of 10 cards got peer
+  insights, 124 figures verified. Spot-checked the summaries against the threads, and
+  they're faithful ("3 of 10 replies judged pipeline on stage-by-stage conversion" =
+  BT-1031 ×2 + BT-1034; "Series B CFO removed 20% of pipeline"; "about $400K a year in
+  overlapping software"). They report disagreement and say when evidence is thin.
+- **Most important finding: count attribution.** The AI wrote "N of M replies …"
+  itself. The check only confirmed N and M were real tallies, not that they belonged
+  to *that* approach. Fix: the AI names an approach tag; **code writes the count and
+  label** next to the AI's sentence, and adds every thread with that approach to the
+  citation. Any count the AI writes ("3 of 10", "two of the twelve") is dropped, even a
+  true one. Each card shows how many AI points the checks dropped.
+- **A key point silently dropped:** on the raise-timing card, the main thread's advice
+  ("start with 18+ months") was removed because 18 appears only in the approach label.
+  Fix: label figures are allowed.
+- **No Braintrust drafts appeared:** the enterprise card had one thread and three
+  replies but scored "close" on wording. Fix: fewer than two threads is thin coverage
+  and gets a draft.
+- **Verifier false positive:** "a 9-point drop" in a trap sentence that names only GRR
+  (the card is about NRR). Fix: a point change may match a code-computed change for any
+  metric the card names. "GRR held, but there was a 9-point drop" still fails.
+- 107 tests pass.

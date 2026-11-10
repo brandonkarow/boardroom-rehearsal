@@ -44,10 +44,10 @@ class FakeClient:
         for q in payload:
             top = q["approach_counts"]["approaches"][0]
             t0 = q["threads"][0]["thread_id"]
-            out.append({"q_id": q["q_id"], "headline": f"Most peers {top['label']}.",
-                        "points": [{"text": f"{top['replies']} of {top['of']} replies {top['label']}.",
+            out.append({"q_id": q["q_id"], "headline": f"Peers {top['label']}.",
+                        "points": [{"approach": top["approach"], "text": f"Peers {top['label']}.",
                                     "thread_ids": top["thread_ids"]},
-                                   {"text": "One peer tied it to a dated plan.", "thread_ids": [t0]}],
+                                   {"approach": None, "text": "One peer tied it to a dated plan.", "thread_ids": [t0]}],
                         "split": None, "stage_note": None})
         return {"summaries": out}
 

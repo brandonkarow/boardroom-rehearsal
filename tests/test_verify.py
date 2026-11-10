@@ -143,3 +143,13 @@ def test_metric_named_in_a_later_clause_does_not_claim_the_figure(allowed):
     text = "Evidence: Q2 was $3.1M vs $3.9M (-20.5%) and Q3 was $2.87M vs $3.8M (-24.5%); coverage is 2.4x vs the 3x target."
     v = verify_text(text, allowed)
     assert v.ok, [(c.text, c.source) for c in v.mismatches]
+
+
+def test_point_change_can_refer_to_the_cards_metric(allowed):
+    # Live run 5: the card is about NRR; the trap sentence only names GRR.
+    card = ("NRR is 109%, down from 118% in Q1 2026. "
+            "Pointing to the still-healthy GRR to downplay the decline, when a 9-point drop is the story.")
+    assert verify_text(card, allowed).ok
+    # ...but only for point changes the code computed, and only for metrics the card names.
+    assert not verify_text("Pointing to GRR, when a 7-point drop is the story. NRR is 109%.", allowed).ok
+    assert not verify_text("GRR held, but there was a 9-point drop.", allowed).ok
