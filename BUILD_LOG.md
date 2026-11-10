@@ -146,3 +146,24 @@ back**. Read every card as a board member would. Found:
   product, price or segment"); traps are specific (e.g. "don't blame the market when
   GRR held").
 - 74 tests pass.
+
+## 2026-11-10 — Second live run (after fixes)
+
+- **58 seconds** end to end (was about 3.5 minutes): the parallel persona calls work.
+  Green badge, 95 figures checked, 1 held back. The signature question is now #1. Streak
+  claims were checked live ("fallen five quarters in a row" ✓, "three quarters in a
+  row" ✓); the four-vs-three margin error didn't recur.
+- **The verifier caught real AI arithmetic:** "the Q3 plan … was only $0.1M lower".
+  True (3.9 → 3.8), but the model subtracted to get it, which the rules forbid. Held
+  back correctly. Because plan-over-plan change is a fact a director would raise,
+  code now computes it: `net_new_arr_plan_m` is added to TRENDS. Any other amount
+  ("$0.4M lower") still fails.
+- **Still 9, not 10:** the strict caps (4 per persona, 2 per signal, 1 positive) ran out
+  of eligible candidates. Added a third pass that relaxes the caps, never the dedupe,
+  so the list fills to 10.
+- **Leak of internal labels:** card #9 said "The streak is seven quarters of growth,
+  from TRENDS." Prompt now bans input labels in CFO-facing text.
+- Persona lanes improved (the Director now asks forecast/pipeline and margin), though the
+  Growth VC still took one burn question. Left it: it's framed as a growth investor's
+  question ("is the burn still buying growth?").
+- 76 tests pass.

@@ -159,7 +159,7 @@ def prepare(raw: pd.DataFrame, source: str = "upload") -> KPIPack:
     return KPIPack(df=df[ordered + extra], issues=issues, source=source)
 
 
-TREND_METRICS = ["arr_m", "net_new_arr_m", "revenue_m", "nrr_pct", "grr_pct",
+TREND_METRICS = ["arr_m", "net_new_arr_m", "net_new_arr_plan_m", "revenue_m", "nrr_pct", "grr_pct",
                  "gross_margin_pct", "net_burn_m", "burn_multiple", "cash_m",
                  "runway_months", "pipeline_coverage_x", "cac_payback_months",
                  "headcount", "enterprise_logos"]

@@ -17,6 +17,8 @@ about"; ask at most one question outside it. Another board member covers the res
 Cover different signals; don't ask the same thing twice. If SIGNALS has a positive
 signal that fits this persona, include one question that lets the CFO tell that story.
 Numbers: use only figures that appear in the data below. Do not compute new ones.
+Write for the CFO: never mention the input labels (SIGNALS, TRENDS, KPI_TABLE,
+THRESHOLDS, signal ids) in the question, outline or trap.
 
 PERSONA
 {persona}

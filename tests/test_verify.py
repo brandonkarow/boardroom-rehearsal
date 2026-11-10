@@ -106,3 +106,9 @@ def test_streak_claims_are_checked_against_code(allowed):
     assert verify_text("You missed plan two quarters in a row.", allowed).ok         # FORECAST_MISS count
     assert not verify_text("Pipeline coverage fell six straight quarters.", allowed).ok   # it is 5
     assert verify_text("Pipeline coverage fell five straight quarters.", allowed).ok
+
+
+def test_plan_change_is_a_computed_figure(allowed):
+    # Live run 2: "The Q3 plan ... was only $0.1M lower" (3.9 -> 3.8). Now a code-computed trend.
+    assert verify_text("The Q3 plan was set after the Q2 miss and was only $0.1M lower.", allowed).ok
+    assert not verify_text("The Q3 plan was $0.4M lower.", allowed).ok

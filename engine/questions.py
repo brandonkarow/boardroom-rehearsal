@@ -214,6 +214,12 @@ def rank(candidates: list[Question], report: SignalReport, k: int = TOP_K,
             break
         if ok(i):
             take(i)
+    # 3) Still short? Relax the persona/signal caps, but never allow a duplicate.
+    for i in order:
+        if len(chosen) >= k:
+            break
+        if i not in chosen and all(sim[i, j] < DUP_SIMILARITY for j in chosen):
+            take(i)
 
     top = sorted((candidates[i] for i in chosen), key=lambda c: -c.score)
     for r, q in enumerate(top, 1):

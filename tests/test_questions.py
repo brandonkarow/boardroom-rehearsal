@@ -99,3 +99,17 @@ def test_one_positive_story_question_and_persona_fit_wins(fake_llm, pack, report
     assert len(positive_led) == 1
     # ENTERPRISE_LOGOS is in the Growth VC's lane, so her version beats the Cash Investor's.
     assert positive_led[0].persona_id == "growth_vc"
+
+
+def test_rank_fills_ten_when_caps_are_tight(fake_llm, pack, report, bva):
+    from engine import questions as qmod
+    cands, _ = generate_candidates(fake_llm, pack, report, bva)
+    old = qmod.MAX_PER_PERSONA
+    try:
+        qmod.MAX_PER_PERSONA = 2          # strict passes alone would stop at 6
+        top = rank(cands, report, per_persona=2)
+    finally:
+        qmod.MAX_PER_PERSONA = old
+    assert len(top) == 10
+    texts = [q.question for q in top]
+    assert len(set(texts)) == 10
