@@ -311,3 +311,31 @@ back**. Read every card as a board member would. Found:
 - **First 60 seconds:** one-line value proposition, a four-step "how it works" line, and a
   "try it in 60 seconds" prompt on the empty state.
 - 113 tests pass.
+
+## 2026-11-10 — Phase 7: harden, document, package
+
+- Verified Phase 6 live: instant demo is the default, results arrive 1 second after
+  Rehearse, the badge is green, and the brief downloads are present. Brandon parked
+  Grill Me until after Phase 7 (agreed cut rule: drop it if the follow-ups are weak or slow).
+- **Skeptical-CFO uploads, 15 cases.** Found one crash (pipeline target of 0 →
+  ZeroDivisionError) and four rough edges. Fixes: the rule skips with a reason;
+  "$48.0M" / "109%" / "1,234" cells parse; semicolon CSVs (European Excel) are
+  detected; plausibility warnings for values a CFO would call a data error (NRR 500%, GRR
+  over 100%, negative cash, ARR typed in dollars instead of $M); a template CSV download.
+  Already fine: Excel BOM, thousands separators, negative net new ARR, cash-flow-positive
+  quarter, one quarter only, empty file, .xlsx renamed .csv.
+- **Bug found while writing a test:** pandas 3 stores text in its own string type, so the
+  "$/%" cleanup never ran on real exports until the type check was fixed.
+- **Own pack, no key:** previously three separate "cache miss" warnings. Now the risk
+  signals still render (code needs no key), and Rehearse is disabled with one plain
+  sentence on what's needed.
+- **Test-harness correction:** the fake Streamlit "clicked" disabled buttons, which real
+  Streamlit never does; fixed the fake, not the app.
+- **README drafted** from the plan's outline, with real mechanisms and numbers. The
+  "The problem" and "Path to Floyd" sections are marked for Brandon to rewrite in his voice.
+- **Instructions file packaged:** the prompts plus a one-page guide to what each does.
+- **Clean-room note:** this workspace can't install Streamlit, so the true one-line
+  setup was proven by Streamlit Community Cloud, which does a fresh install from
+  requirements.txt on every deploy. Every upload was also checked by a fresh `git clone`
+  plus the full test suite.
+- 125 tests pass.

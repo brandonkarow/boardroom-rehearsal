@@ -31,7 +31,7 @@ def fake_streamlit(buttons):
     st.session_state = State()
     st.secrets = {}
     st.stop.side_effect = Stop
-    st.button.side_effect = lambda label, **kw: buttons.get(label, False)
+    st.button.side_effect = lambda label, **kw: buttons.get(label, False) and not kw.get("disabled")  # like Streamlit
     st.file_uploader.return_value = None
     st.columns.side_effect = lambda spec: [MagicMock() for _ in (spec if isinstance(spec, list) else range(spec))]
     st.sidebar = MagicMock()

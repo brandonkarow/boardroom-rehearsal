@@ -171,6 +171,8 @@ def _rule_level(df, rule):
 def _rule_vs_target(df, rule):
     cur = float(df[rule["metric"]].iloc[-1])
     target = float(df[rule["target_metric"]].iloc[-1])
+    if not target or target <= 0 or pd.isna(target):   # no usable target: nothing to compare
+        return None
     ratio = cur / target
     ctx = {"current": cur, "target": target, "ratio_pct": round(ratio * 100, 1),
            "delta": round(cur - target, 2)}

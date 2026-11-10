@@ -36,6 +36,10 @@ with st.sidebar:
     if st.button("Load Northbeam Q3 board pack", type="primary", use_container_width=True):
         ss.pack, ss.bva, ss.result = load_kpis(), load_budget_vs_actual(), None
     upload = st.file_uploader("…or upload a KPI CSV", type=["csv"])
+    from engine.kpis import REQUIRED_COLUMNS, SAMPLE_KPIS
+    st.download_button("Download the CSV template", SAMPLE_KPIS.read_bytes(), "board_kpis_template.csv",
+                       "text/csv", help="The Northbeam sample in the expected format. Required columns: "
+                       + ", ".join(REQUIRED_COLUMNS) + ". Money in $M, rates in %.")
     if upload is not None and ss.get("upload_name") != upload.name:
         try:
             ss.pack, ss.bva, ss.result = load_kpis(upload, source="upload"), None, None
@@ -102,7 +106,13 @@ with st.expander("KPI table"):
 
 # ---- 2. The hard 10 -----------------------------------------------------------------
 st.subheader("2 · The hard 10")
-if st.button("Rehearse", type="primary", disabled=not report.flags):
+needs_live = llm.mode == "demo" and pack.source != "sample"
+if needs_live:
+    st.info("The instant demo only covers the Northbeam sample. Rehearsing your own pack needs a live AI run"
+            + (": choose **Live AI run** in the sidebar." if live_llm.mode == "live"
+               else ", which needs an ANTHROPIC_API_KEY (see the README). The risk signals above are computed "
+                    "in code and work without one."))
+if st.button("Rehearse", type="primary", disabled=not report.flags or needs_live):
     with st.status("Rehearsing…", expanded=True) as status:
         st.write("Three board members are reading the pack…")
         res = pipeline.run(llm, pack, ss.get("bva"), report, with_peers=False)

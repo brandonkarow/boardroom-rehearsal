@@ -49,6 +49,16 @@ METRIC_INFO = {
     "enterprise_logos": ("Enterprise logos", "logos"),
 }
 
+# (column, low, high, what the normal range means) for plausibility warnings.
+PLAUSIBLE = [
+    ("nrr_pct", 50, 200, "expected 50–200%"),
+    ("grr_pct", 0, 100, "GRR can't exceed 100%"),
+    ("gross_margin_pct", -50, 100, "expected under 100%"),
+    ("pipeline_coverage_x", 0, 20, "expected 0–20x"),
+    ("cash_m", 0, 100000, "cash should be positive and in $M"),
+    ("arr_m", 0, 100000, "ARR should be in $M, e.g. 48.0 for $48M"),
+]
+
 QUARTER_RE = re.compile(r"^Q([1-4])\s+(\d{4})$")
 MIN_QUARTERS = 2
 TOL_RATIO = 0.05   # burn multiple tolerance (x)
@@ -84,9 +94,11 @@ def load_kpis(src: Union[str, Path, IO, None] = None, source: str | None = None)
     """Load a KPI CSV (path or file-like). Defaults to the Northbeam sample."""
     src = SAMPLE_KPIS if src is None else src
     try:
-        raw = pd.read_csv(src)
+        # sep=None sniffs the delimiter (comma, semicolon, tab); utf-8-sig drops an Excel BOM.
+        raw = pd.read_csv(src, sep=None, engine="python", encoding="utf-8-sig")
     except Exception as exc:  # malformed file, wrong encoding, empty upload...
-        raise SchemaError(f"Couldn't read that file as a CSV ({exc.__class__.__name__}).") from exc
+        raise SchemaError(f"Couldn't read that file as a CSV ({exc.__class__.__name__}). "
+                          "Download the template from the sidebar to see the expected format.") from exc
     return prepare(raw, source=source or ("sample" if src == SAMPLE_KPIS else "upload"))
 
 
@@ -111,6 +123,8 @@ def prepare(raw: pd.DataFrame, source: str = "upload") -> KPIPack:
 
     numeric = [c for c in REQUIRED_COLUMNS + OPTIONAL_COLUMNS if c in df.columns and c != "quarter"]
     for c in numeric:
+        if not pd.api.types.is_numeric_dtype(df[c]):   # exports often carry "$48.0M", "109%", "1,234"
+            df[c] = df[c].astype(str).str.replace(r"[\s$,%xX]|(?<=\d)[mM]$", "", regex=True)
         df[c] = pd.to_numeric(df[c], errors="coerce")
     blanks = [c for c in REQUIRED_COLUMNS[1:] if df[c].isna().any()]
     if blanks:
@@ -125,6 +139,13 @@ def prepare(raw: pd.DataFrame, source: str = "upload") -> KPIPack:
     if "equity_raised_m" not in df.columns:
         df["equity_raised_m"] = 0.0
     df["equity_raised_m"] = df["equity_raised_m"].fillna(0.0)
+
+    # --- Plausibility: values a CFO would call a data error, not a trend ---
+    latest = df.iloc[-1]
+    for col, lo, hi, what in PLAUSIBLE:
+        if col in df.columns and not pd.isna(latest[col]) and not (lo <= latest[col] <= hi):
+            issues.append(f"{latest['quarter']}: {METRIC_INFO[col][0]} of {latest[col]:g} looks implausible "
+                          f"({what}). Check the pack before rehearsing.")
 
     # --- Recompute derived metrics; report any disagreement with the pack ---
     calc_bm = (df["net_burn_m"] / df["net_new_arr_m"].where(df["net_new_arr_m"] > 0)).round(2)
