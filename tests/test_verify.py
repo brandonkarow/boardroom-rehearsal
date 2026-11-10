@@ -112,3 +112,27 @@ def test_plan_change_is_a_computed_figure(allowed):
     # Live run 2: "The Q3 plan ... was only $0.1M lower" (3.9 -> 3.8). Now a code-computed trend.
     assert verify_text("The Q3 plan was set after the Q2 miss and was only $0.1M lower.", allowed).ok
     assert not verify_text("The Q3 plan was $0.4M lower.", allowed).ok
+
+
+# Live run 4: held back wrongly.
+@pytest.mark.parametrize("text", [
+    "Using the 40% logo growth as proof the business is healthy while ignoring that NRR and net new ARR are both falling.",
+    "A 9-point drop in retention undermines the revenue plan.",
+    "Runway is 17 months, inside the 18-month line.",
+])
+def test_live_run_4_false_positives_now_pass(text, allowed):
+    v = verify_text(text, allowed)
+    assert v.ok, [(c.text, c.source) for c in v.mismatches]
+
+
+def test_hyphenated_units_parse():
+    vals = {raw: (val, cat) for raw, val, cat, _ in extract("a 9-point drop, an 18-month line")}
+    assert vals["9-point"] == (9.0, "pct") and vals["18-month"] == (18.0, "months")
+    assert not verify_text("A 7-point drop in retention.", allowed_numbers(*_sample())).ok
+
+
+def _sample():
+    from engine.kpis import load_budget_vs_actual, load_kpis
+    from engine.signals import evaluate
+    p = load_kpis()
+    return p, evaluate(p), load_budget_vs_actual()

@@ -40,7 +40,8 @@ FAMILY = {
 }
 # Words that name each family in prose (longest phrases win).
 KEYWORDS = {
-    "nrr": ["net revenue retention", "net dollar retention", "net retention", "nrr", "ndr", "expansion"],
+    "nrr": ["net revenue retention", "net dollar retention", "net retention", "nrr", "ndr", "expansion",
+            "retention"],
     "grr": ["gross revenue retention", "gross retention", "grr", "churn"],
     "gross_margin": ["gross margin", "margin"],
     "burn_multiple": ["burn multiple"],
@@ -50,7 +51,7 @@ KEYWORDS = {
     "pipeline": ["pipeline coverage", "pipeline", "coverage"],
     "cac": ["cac payback", "payback", "cac"],
     "headcount": ["headcount", "employees", "people"],
-    "logos": ["enterprise logos", "enterprise customers", "logos"],
+    "logos": ["enterprise logos", "enterprise logo", "enterprise customers", "logos", "logo"],
     "net_new_arr": ["net new arr", "new arr", "bookings", "plan", "forecast"],
     "arr": ["arr"],
     "revenue": ["revenue"],
@@ -70,7 +71,7 @@ KW_FAMILY = {k: f for k, f in _KW}
 
 NUM_RE = re.compile(
     r"(?P<dollar>\$)?(?P<num>-?\d{1,3}(?:,\d{3})+(?:\.\d+)?|-?\d+(?:\.\d+)?)"
-    r"\s?(?P<suffix>%|percentage points?\b|percent\b|pts?\b|points?\b|x\b|×"
+    r"(?:\s|-)?(?P<suffix>%|percentage points?\b|percent\b|pts?\b|points?\b|x\b|×"
     r"|M\b|mm\b|million\b|K\b|k\b|thousand\b|B\b|billion\b|months?\b|mos?\b)?",
     re.I)
 IGNORE_RE = re.compile(r"\bQ[1-4](?:\s+(?:FY)?\d{4})?\b|\bFY\s?\d{2,4}\b|\b20\d{2}\b"

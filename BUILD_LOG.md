@@ -181,3 +181,18 @@ back**. Read every card as a board member would. Found:
      (twice → "invalid output"). Fix: 16,000 tokens, and a cut-off reply (stop_reason
      `max_tokens`) is reported as exactly that, so the cause is visible in-app next time.
 - 78 tests pass.
+
+## 2026-11-10 — Fourth live run: clean (Phase 4 checkpoint met)
+
+- **10 questions, 48 seconds, 113 figures verified, no crash.** The Director's
+  forecast question (with the code-computed "$0.1M below the Q2 plan") is now #2;
+  "margin has fallen three quarters in a row" is correct and checked.
+- **Two more verifier false positives,** both from how the checker links a figure to
+  its metric: "the 40% logo growth" (only the plural "logos" was a keyword) and "a
+  9-point drop in retention" (the hyphenated "9-point" lost its unit, and bare
+  "retention" wasn't a keyword, so it was matched to "revenue"). Fixed, with the exact
+  live sentences as regression tests. "A 7-point drop in retention" still fails.
+- Pattern so far: four rounds of live output found false positives (rejecting true
+  figures). None found a false negative (accepting a wrong one). Over-strict is the
+  right failure mode for a CFO tool; each new phrasing becomes a test.
+- 82 tests pass.
