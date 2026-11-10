@@ -11,6 +11,7 @@ import streamlit as st
 from engine import pipeline
 from engine.kpis import METRIC_INFO, SchemaError, load_budget_vs_actual, load_kpis
 from engine.llm import LLM
+from engine.peers import threads_by_id
 from engine.signals import evaluate, fmt
 
 SEVERITY_BADGE = {"red": "🔴 Red", "amber": "🟠 Amber", "positive": "🟢 Positive"}
@@ -47,10 +48,6 @@ with st.sidebar:
     else:
         st.info("Demo mode · no API key, so cached AI outputs for the Northbeam sample are used.")
     st.caption("All data is synthetic. Northbeam Analytics is a fictional company.")
-    if llm.mode == "live" and llm.cache.entries:
-        st.download_button("Download demo cache", llm.cache.export(), "cache.json",
-                           "application/json", help="Commit this file to demo_cache/ "
-                           "so the app works without a key.")
 
 # ---- Header ---------------------------------------------------------------------
 st.title("Boardroom Rehearsal")
@@ -88,8 +85,12 @@ with st.expander("KPI table"):
 # ---- 2. The hard 10 -----------------------------------------------------------------
 st.subheader("2 · The hard 10")
 if st.button("Rehearse", type="primary", disabled=not report.flags):
-    with st.spinner("Three board members are reading the pack…"):
-        ss.result = pipeline.run(llm, pack, ss.get("bva"), report)
+    with st.status("Rehearsing…", expanded=True) as status:
+        st.write("Three board members are reading the pack…")
+        res = pipeline.run(llm, pack, ss.get("bva"), report, with_peers=False)
+        st.write(f"Ranked the top {len(res.top)}. Finding how peer CFOs handled each one…")
+        ss.result = pipeline.add_peers(llm, res) if res.top else res
+        status.update(label="Rehearsal ready", state="complete", expanded=False)
 
 result = ss.get("result")
 if result is None:
@@ -103,10 +104,73 @@ if result.top:
     n_checked = len(result.verification.checks)
     if result.verification.ok:
         st.success(f"✅ All figures verified: {n_checked} numbers checked against the KPI table.")
+    peers = [q.extra.get("peers") for q in result.top if q.extra.get("peers")]
+    if peers:
+        close = sum(p.coverage == "close" for p in peers)
+        drafts = sum(bool(p.draft) for p in peers)
+        st.caption(f"Peer layer: {close} of {len(result.top)} questions have close peer threads; "
+                   f"{drafts} Braintrust draft(s) for questions peers haven't covered. "
+                   "Peer threads are synthetic.")
     else:
         st.error(f"{len(result.verification.mismatches)} figure(s) didn't match the KPI table.")
 
 flags = report.by_id()
+threads = threads_by_id()
+
+
+def cite(ids: list[str]) -> str:
+    return " ".join(f"`{t}`" for t in ids)
+
+
+def render_peers(q) -> None:
+    p = q.extra.get("peers")
+    if p is None:
+        return
+    st.markdown("---")
+    if p.coverage == "close":
+        st.markdown("#### 🤝 How peers handled it")
+    elif p.coverage == "topic":
+        st.markdown("#### 🤝 How peers handled the topic")
+        st.caption("Peers have discussed this area, but not this exact question. A draft for the Braintrust is below.")
+    else:
+        st.markdown("#### 🤝 No peer threads on this yet")
+    if p.facts:   # computed in code, shown as data
+        f = p.facts
+        stages = ", ".join(f"{k} {v}" for k, v in f["stages"].items())
+        st.caption(f"{f['replies']} replies across {f['threads']} thread(s) · {f['pushback_replies']} pushed back · "
+                   f"{stages} · counted in code")
+    s = p.summary
+    if s:
+        if s["headline"]:
+            st.markdown(f"**{esc(s['headline'])}**")
+        for pt in s["points"]:
+            st.markdown(f"- {esc(pt['text'])} {cite(pt['thread_ids'])}")
+        if s.get("split"):
+            st.markdown(f"**Where peers disagree:** {esc(s['split']['text'])} {cite(s['split']['thread_ids'])}")
+        if s.get("stage_note"):
+            st.markdown(f"*{esc(s['stage_note'])}*")
+    if p.matches:
+        with st.popover("Read the peer threads (synthetic)"):
+            for m in p.matches:
+                t = threads[m.thread_id]
+                a = t["asked_by"]
+                st.markdown(f"**`{t['id']}` {esc(t['title'])}**  \n"
+                            f"<span style='color:gray;font-size:0.85em'>Asked by a {a['stage']} {a['industry']} CFO "
+                            f"({esc(a['arr_band'])} ARR) · {t['posted']} · match {m.score:.2f}</span>",
+                            unsafe_allow_html=True)
+                st.markdown(f"> {esc(t['question'])}")
+                for r in t["replies"]:
+                    tag = " · *pushed back*" if r.get("dissent") else ""
+                    st.markdown(f"- **{r['stage']}, {r['industry']}**{tag}: {esc(r['text'])}")
+    if p.draft:
+        st.markdown("**Ask the Braintrust** (anonymous draft: no company name, figures as ranges)")
+        st.text_input("Title", p.draft["title"], key=f"bt_title_{q.rank}")
+        st.text_area("Question", p.draft["question"], key=f"bt_q_{q.rank}", height=110)
+        if st.button("Post to the Braintrust (mock)", key=f"bt_post_{q.rank}"):
+            st.info("Prototype: nothing was posted. In Floyd this would go to peers matched on stage and topic, "
+                    "and their answers would feed the next CFO's prep.")
+
+
 for q in result.top:
     with st.expander(f"**{q.rank}. {q.persona_name}** — {esc(q.question)}"):
         st.markdown(f"**Why they'll ask:** {esc(q.why_they_ask)}")
@@ -120,6 +184,7 @@ for q in result.top:
         st.markdown(f"**Trap to avoid:** {esc(q.trap_to_avoid)}")
         v = q.extra["verification"]
         st.caption(esc("Figures checked: " + (", ".join(f"{c.text} ✓" for c in v.checks) or "none")))
+        render_peers(q)
 
 if result.held_back:
     with st.expander(f"Held back by the verifier ({len(result.held_back)})"):
@@ -128,3 +193,11 @@ if result.held_back:
             bad = "; ".join(f"**{c.text}** in “{c.context}” ({c.source})"
                             for c in q.extra["verification"].mismatches)
             st.markdown(esc(f"- *{q.persona_name}:* {q.question}  \n  **Unverified:** {bad}"))
+
+# ---- Save this run for demo mode (live mode only) ----------------------------------
+if llm.mode == "live" and getattr(result, "ai_calls", 0):   # older session objects lack it
+    st.divider()
+    st.download_button(
+        f"Save this run as the demo cache ({result.ai_calls} AI outputs)",
+        llm.cache.export(result.run_id), "cache.json", "application/json",
+        help="Exactly this run's AI outputs. Committed to demo_cache/, it lets the app run without a key.")

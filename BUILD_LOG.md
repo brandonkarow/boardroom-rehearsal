@@ -196,3 +196,59 @@ back**. Read every card as a board member would. Found:
   figures). None found a false negative (accepting a wrong one). Over-strict is the
   right failure mode for a CFO tool; each new phrasing becomes a test.
 - 82 tests pass.
+
+## 2026-11-10 — Demo cache attempt: caught a mixed export
+
+- **Brandon downloaded the cache; on inspection it mixed two runs.** Cash Investor and
+  Director entries came from the clean run (14:52), but Growth VC came from the crashed
+  run (14:48), and that entry still carried the "from TRENDS" leak. Cause: the sidebar
+  button exported whatever was on disk when the page rendered. Not committed as the
+  demo cache. Fix: every cache entry is tagged with the run that produced it, and a
+  "Save this run as the demo cache" button below the results exports exactly that run.
+  The coherent cache will be saved in Phase 6, once the peer layer adds its own AI calls.
+- **Used it as real-model test data instead** (tests/fixtures/live_cache_2026-11-10.json,
+  hand-checked: every figure is correct). It exposed one more verifier false positive:
+  in "…(-20.5%) and Q3 … (-24.5%); coverage is 2.4x", the -20.5% was linked to
+  "coverage" in the next clause. Fix: semicolons end a clause, and a metric named
+  *after* a figure only counts when it is right next to it ("40% logo growth").
+  New regression test: the real output must verify 100% and rank a full, covering top 10.
+- 85 tests pass.
+
+## 2026-11-10 — Phase 5: peer-consensus layer
+
+- **Design decision (Brandon: "the most valuable part, knock it out of the park"):**
+  "4 of 5 CFOs led with cohort data" is a number, so the AI may not produce it. Every
+  reply in the library carries an `approach` tag; code counts approaches across the
+  retrieved threads and hands the AI the tallies. The AI writes sentences and cites
+  thread IDs. Code drops any point that cites a thread it didn't retrieve or uses a
+  number that is neither a code count nor a figure quoted in those threads.
+- **Braintrust drafts follow the same rule:** code turns the company's numbers into
+  ranges ("$25–50M ARR", "105–110% NRR", "12–18 months of runway"). A draft that names
+  the company or contains any other figure is rejected and retried.
+- **Library: 40 synthetic threads, 136 replies, 63 labeled approaches.** 29 threads
+  include at least one pushback reply with a stated reason (stage, risk, a reversal
+  that went wrong). Stages from Series B to pre-IPO; 10 industries including
+  marketplace and fintech. Four deliberately off-topic threads (auditor switch, ASC 606,
+  planning tools, equity refresh) stand in for real community traffic and test that
+  retrieval ignores them. Screened every capitalized word: no real companies or people.
+  Correction (own): the first draft had no marketplace CFOs, which the plan asked for.
+- **Retrieval tuning, in four steps, on the 15 real questions from the live cache:**
+  1. Plain TF-IDF over question + all cited signals' keywords: right top thread, but a
+     secondary signal ("…and margin") pulled in the wrong topic.
+  2. Main signal's keywords only, plus a 60% relative floor: precise but too thin
+     (forecast questions got one thread).
+  3. Calibration test exposed a real flaw: an unrelated "data privacy" question scored
+     0.46 because signal keywords dominated, so matching was a topic lookup, not
+     reading the question. The question's own words were too short to be a hard gate.
+  4. Final: topic boost for the main signal's `peer_topic` (in signals.yaml), the
+     question's own wording blended into the ranking (weight 0.5), floors for the 2nd
+     and 3rd thread, and a **coverage grade**: "close" when the question's own words
+     match a thread, "topic" when peers discussed the area but not this exact question.
+     Topic-only questions get peer insights **and** a Braintrust draft.
+  Result on the live questions: 11 close, 4 topic-only (three enterprise-quality
+  questions, plus "how much of the burn multiple is NRR"). Off-topic threads are never
+  retrieved. Stopped tuning there to avoid overfitting 15 questions.
+- **Speed:** consensus runs in batches of 4 questions, in parallel with the drafts, as a
+  second visible step ("Finding how peer CFOs handled each one…").
+- 101 tests pass, including attacks on every guardrail: a citation to a non-retrieved
+  thread, an invented "7 of 9 CFOs", and drafts containing "Northbeam", "109%" or "$48M".

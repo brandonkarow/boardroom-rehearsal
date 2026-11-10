@@ -136,3 +136,10 @@ def _sample():
     from engine.signals import evaluate
     p = load_kpis()
     return p, evaluate(p), load_budget_vs_actual()
+
+
+def test_metric_named_in_a_later_clause_does_not_claim_the_figure(allowed):
+    # Live cache: "-20.5%" was matched to "coverage", which comes after the semicolon.
+    text = "Evidence: Q2 was $3.1M vs $3.9M (-20.5%) and Q3 was $2.87M vs $3.8M (-24.5%); coverage is 2.4x vs the 3x target."
+    v = verify_text(text, allowed)
+    assert v.ok, [(c.text, c.source) for c in v.mismatches]

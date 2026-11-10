@@ -12,6 +12,7 @@ import json
 import os
 import re
 import threading
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Protocol
@@ -135,9 +136,9 @@ class DemoCache:
         e = self.entries.get(key)
         return None if e is None else e["output"]
 
-    def put(self, key: str, task: str, output: Any, model: str) -> None:
+    def put(self, key: str, task: str, output: Any, model: str, run_id: str = "") -> None:
         with self._lock:   # persona calls run in parallel
-            self.entries[key] = {"task": task, "model": model, "output": output,
+            self.entries[key] = {"task": task, "model": model, "run_id": run_id, "output": output,
                                  "created": datetime.now(timezone.utc).isoformat(timespec="seconds")}
             try:  # best effort: Streamlit Cloud's disk is ephemeral; the UI offers a download
                 self.path.parent.mkdir(exist_ok=True)
@@ -145,9 +146,15 @@ class DemoCache:
             except OSError:
                 pass
 
-    def export(self) -> str:
+    def export(self, run_id: str | None = None) -> str:
+        """All entries, or only those one run produced (so a saved cache is never a mix)."""
         with self._lock:
-            return json.dumps(self.entries, indent=2)
+            entries = {k: v for k, v in self.entries.items()
+                       if run_id is None or v.get("run_id") == run_id}
+            return json.dumps(entries, indent=2)
+
+    def count(self, run_id: str) -> int:
+        return sum(v.get("run_id") == run_id for v in self.entries.values())
 
 
 class LLM:
@@ -160,6 +167,7 @@ class LLM:
             client = AnthropicClient(key) if key else None
         self.client = client
         self.mode = "live" if client else "demo"
+        self.run_id = uuid.uuid4().hex[:12]   # tags every output this instance records
         self.model = getattr(client, "model", MODEL) if client else "cached"
 
     def json(self, task: str, key_parts: tuple, system: str, user: str,
@@ -173,5 +181,5 @@ class LLM:
                     "Add an ANTHROPIC_API_KEY to rehearse with your own data.")
             return validate(out)
         out = call_json(self.client, system, user, validate)
-        self.cache.put(key, task, out, self.model)
+        self.cache.put(key, task, out, self.model, self.run_id)
         return out

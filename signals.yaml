@@ -23,6 +23,8 @@ rules:
     amber: -2.0            # a 2-point drop in two quarters gets attention
     red: -5.0
     persona_hint: growth_vc
+    peer_keywords: "net revenue retention NRR expansion churn GRR cohort segment"   # words used to find peer threads
+    peer_topic: nrr            # threads on this topic get a small boost
     template: "NRR fell from {prior}% in {prior_quarter} to {current}% in {quarter} ({delta} pts in two quarters)."
 
   - id: BURN_MULTIPLE
@@ -35,6 +37,8 @@ rules:
     red: 2.0
     compare_lookback: 4    # also report the year-ago value for context
     persona_hint: cash_investor
+    peer_keywords: "burn multiple burn efficiency cuts spend headcount"   # words used to find peer threads
+    peer_topic: burn            # threads on this topic get a small boost
     template: "Burn multiple is {current}x in {quarter}, up from {prior}x in {prior_quarter} (+{delta}x year over year)."
 
   - id: GROSS_MARGIN
@@ -47,6 +51,8 @@ rules:
     amber: -2.0            # 2+ points a year is a margin story the board will want explained
     red: -4.0
     persona_hint: independent_director
+    peer_keywords: "gross margin cost of revenue hosting cloud costs COGS migration"   # words used to find peer threads
+    peer_topic: gross_margin            # threads on this topic get a small boost
     template: "Gross margin is {current}% in {quarter}, down {abs_delta} pts from {prior}% in {prior_quarter}."
 
   - id: PIPELINE_COVERAGE
@@ -59,6 +65,8 @@ rules:
     amber: 1.00            # anything under target is amber
     red: 0.85              # under 85% of target is red
     persona_hint: growth_vc
+    peer_keywords: "pipeline coverage conversion win rate bookings next quarter"   # words used to find peer threads
+    peer_topic: pipeline            # threads on this topic get a small boost
     template: "Next-quarter pipeline coverage is {current}x against a {target}x target ({ratio_pct}% of target)."
 
   - id: RUNWAY
@@ -71,6 +79,8 @@ rules:
     red: 12.0              # inside 12 months, it is urgent
     compare_lookback: 2
     persona_hint: cash_investor
+    peer_keywords: "runway raise fundraising timing cash months"   # words used to find peer threads
+    peer_topic: runway            # threads on this topic get a small boost
     template: "Runway is {current} months in {quarter}, down from {prior} months in {prior_quarter}."
 
   - id: FORECAST_MISS
@@ -83,6 +93,8 @@ rules:
     amber: 1               # one material miss
     red: 2                 # two or more in a row
     persona_hint: independent_director
+    peer_keywords: "plan miss forecast credibility reforecast net new ARR"   # words used to find peer threads
+    peer_topic: forecast            # threads on this topic get a small boost
     template: "Net new ARR missed plan by more than {miss_pct}% for {count} quarters running: {miss_detail}."
 
   - id: ENTERPRISE_LOGOS
@@ -94,6 +106,8 @@ rules:
     direction: up_is_good
     positive: 25.0         # 25%+ year-over-year growth is a story worth telling
     persona_hint: growth_vc
+    peer_keywords: "enterprise good news positive story repeatable"   # words used to find peer threads
+    peer_topic: board_comms            # threads on this topic get a small boost
     template: "Enterprise logos grew from {prior} in {prior_quarter} to {current} in {quarter} (+{delta}% year over year)."
 
   # Watch-list rules: in the pack, expected NOT to fire on the Northbeam sample.
@@ -107,6 +121,8 @@ rules:
     red: 85.0
     compare_lookback: 4
     persona_hint: growth_vc
+    peer_keywords: "gross retention churn GRR"   # words used to find peer threads
+    peer_topic: nrr            # threads on this topic get a small boost
     template: "GRR is {current}% in {quarter} vs {prior}% in {prior_quarter}."
 
   - id: CAC_PAYBACK
@@ -119,6 +135,8 @@ rules:
     red: 30.0
     compare_lookback: 4
     persona_hint: cash_investor
+    peer_keywords: "CAC payback sales efficiency"   # words used to find peer threads
+    peer_topic: burn            # threads on this topic get a small boost
     template: "CAC payback is {current} months in {quarter}, vs {prior} months in {prior_quarter}."
 
 severity_weights:          # used later to rank questions

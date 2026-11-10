@@ -1,0 +1,232 @@
+{
+  "questions/growth_vc:110d7f593137a362": {
+    "task": "questions/growth_vc",
+    "model": "claude-sonnet-5-5",
+    "output": [
+      {
+        "question": "NRR was 118% in Q1 and is 109% in Q3, while GRR only moved from 92% to 91%. That tells me expansion is what stalled, not churn. Is it a product problem, a pricing problem or a segment problem? What has to be true to get NRR back to 118%, and by when?",
+        "signal_ids": [
+          "NRR_DECLINE"
+        ],
+        "why_they_ask": "They want to know whether the growth engine is broken or just stalled, and whether there is a dated plan to restore it.",
+        "answer_outline": [
+          "Headline: the NRR drop is mainly an expansion problem, not a churn problem, and I can name the cohort and cause behind it.",
+          "Evidence: NRR went from 118% in Q1 2026 to 113% in Q2 and 109% in Q3, while GRR went from 92% to 91%. Bring the expansion split by segment, product and pricing tier, because it is not in this data.",
+          "Action: state the specific conditions for recovery, such as which expansion motion has to restart, who owns it and the date you will report against. Do not promise 118% without that evidence."
+        ],
+        "trap_to_avoid": "Blaming macro conditions or customer budgets in general terms without a cohort-level cause, which makes it look as if you do not know where expansion stopped."
+      },
+      {
+        "question": "Enterprise logos are up from 30 to 42 year over year, which is +40%, and that is the best number in the deck. Yet NRR is down to 109% and net new ARR is under plan. Is the enterprise motion real and repeatable, or a few lucky deals? If it is real, why isn't it showing up in retention and expansion, and should we double down?",
+        "signal_ids": [
+          "ENTERPRISE_LOGOS",
+          "NRR_DECLINE"
+        ],
+        "why_they_ask": "They want to back what is working, but they need proof that enterprise logo growth is a repeatable motion that turns into ARR and expansion.",
+        "answer_outline": [
+          "Headline: enterprise is the strongest part of the business, and logo growth is broad-based, not a few deals. Only say this if your deal data supports it.",
+          "Evidence: logos went from 30 to 39 to 42 over the last year. The streak is seven quarters of growth, from TRENDS. Be ready to show how enterprise accounts are behaving on NRR, since the data here does not split it.",
+          "Action: ask for incremental investment in the enterprise motion, tied to the specific leading indicators you will report. Be honest about what the NRR data cannot yet tell you."
+        ],
+        "trap_to_avoid": "Treating logo count as proof of success without showing that enterprise accounts are expanding and retaining, when blended NRR is falling."
+      },
+      {
+        "question": "Next-quarter pipeline coverage is 2.4x against a 3x target, so 80% of target, and it has fallen five quarters in a row. Is this a volume problem, a quality problem or a conversion problem? And how much of the 2.4x do you actually believe?",
+        "signal_ids": [
+          "PIPELINE_COVERAGE"
+        ],
+        "why_they_ask": "Pipeline is the leading indicator for the next bookings miss, and they suspect the coverage number is flattering the real picture.",
+        "answer_outline": [
+          "Headline: coverage is below the 3x target and has declined steadily, and I will say where the gap is, in top of funnel, in stage conversion or in segment.",
+          "Evidence: coverage was 3.1x a year ago, 2.6x last quarter and 2.4x now. It crossed the board's red line, which is below 85% of target. Bring stage-level pipeline quality data if you have it.",
+          "Action: name the specific pipeline-generation changes, their owners and the date coverage should be back to 3x. Say plainly what you will report if it is not."
+        ],
+        "trap_to_avoid": "Presenting 2.4x as adequate or quoting coverage without discussing quality, which invites the question of how much of it will close."
+      },
+      {
+        "question": "Net new ARR missed plan by more than 10% two quarters in a row. Q2 was $3.1M against a $3.9M plan, and Q3 was $2.87M against a $3.8M plan. The miss got bigger. Why should we trust the next plan, and what did you change in how it is built?",
+        "signal_ids": [
+          "FORECAST_MISS"
+        ],
+        "why_they_ask": "They see a widening gap between plan and actual and doubt that management understands its own growth drivers.",
+        "answer_outline": [
+          "Headline: we missed twice, the second miss was larger, and the plan assumptions were wrong in specific ways that we have identified.",
+          "Evidence: Q2 was -20.5% against plan and Q3 was -24.5%. Net new ARR has fallen for five quarters in a row, while the plan kept assuming a higher number.",
+          "Action: present the reset forecast, built bottom-up from pipeline and expansion, and say which assumptions changed. Commit to the date you will show actual against the new plan."
+        ],
+        "trap_to_avoid": "Calling the misses timing or one-offs when the shortfall has widened for two straight quarters and net new ARR has been falling for five."
+      },
+      {
+        "question": "The burn multiple is 2.1x, up from 1.5x a year ago, and runway is down to 17 months. Net burn was $6.03M against a $5.38M budget, and cost of revenue including cloud hosting ran over. We are spending at the same rate while growth slows. What is your plan, and what would you cut before you would cut growth investment?",
+        "signal_ids": [
+          "BURN_MULTIPLE",
+          "RUNWAY",
+          "GROSS_MARGIN"
+        ],
+        "why_they_ask": "As a growth investor they are willing to fund growth but not inefficiency, and they want to know whether the burn is still buying growth.",
+        "answer_outline": [
+          "Headline: burn efficiency has worsened and runway is shorter, and I have a plan that protects the growth investments that are working, such as enterprise.",
+          "Evidence: burn multiple is 2.1x against 1.5x last year, and runway is 17 months against 22 in Q1. Cost of revenue was $3.17M against a $2.88M budget, and gross margin is 72.8% against 75.8% a year ago.",
+          "Action: say where you will reduce spend, including the hosting cost overrun, and what runway and burn multiple milestones you will report. Do not imply growth and burn can both be protected without trade-offs."
+        ],
+        "trap_to_avoid": "Defending the burn as an investment in growth when net new ARR is down and burn is over budget."
+      }
+    ],
+    "created": "2026-11-10T14:48:34+00:00"
+  },
+  "questions/independent_director:110d7f593137a362": {
+    "task": "questions/independent_director",
+    "model": "claude-sonnet-5-5",
+    "output": [
+      {
+        "question": "Net new ARR came in at $3.1M against a $3.9M plan in Q2, then $2.87M against a $3.8M plan in Q3. That is a miss of more than 20% twice in a row, and the Q3 plan was only $0.1M lower than Q2's. What specifically changed in the forecasting process after the Q2 miss, and why should we believe next quarter's number when pipeline coverage is 2.4x against a 3x target?",
+        "signal_ids": [
+          "FORECAST_MISS",
+          "PIPELINE_COVERAGE"
+        ],
+        "why_they_ask": "He suspects the plan is being set top-down and not rebuilt from pipeline evidence, so the same miss will repeat.",
+        "answer_outline": [
+          "Headline: we missed twice, the Q3 plan did not reflect the Q2 run rate, and we are rebuilding the forecast from pipeline.",
+          "Evidence: Q2 was $3.1M vs $3.9M (-20.5%) and Q3 was $2.87M vs $3.8M (-24.5%); coverage is 2.4x vs the 3x target, 80% of target.",
+          "Action: commit to a next-quarter number built bottom-up from pipeline and discounted for the coverage gap, with a monthly variance check reported to the audit committee."
+        ],
+        "trap_to_avoid": "Blaming market conditions or timing slippage without showing what in the forecasting method changed, since the plan barely moved after the first miss."
+      },
+      {
+        "question": "Cost of revenue was $3.17M against a $2.88M budget, 10.1% over, and gross margin is 72.8% against 75.8% a year ago. How much of the overage is one-off and how much is a structural change in cloud hosting and delivery cost? Show me the evidence for the split, and tell me whether the Q4 plan assumes the margin recovers.",
+        "signal_ids": [
+          "GROSS_MARGIN"
+        ],
+        "why_they_ask": "He wants to know whether the margin decline is a lasting change to unit economics that the plan is ignoring.",
+        "answer_outline": [
+          "Headline: the overage is mostly [one-off / structural]; state the split and defend it with the cost detail.",
+          "Evidence: cost of revenue is $0.29M over budget (+10.1%), gross profit is $8.47M vs $9.12M budget, and margin is down 3 pts year over year to 72.8%.",
+          "Action: set a gross margin floor in the Q4 plan, name an owner for hosting cost, and report the margin bridge to the board each quarter."
+        ],
+        "trap_to_avoid": "Calling the hosting increase temporary without a cost breakdown to support it, when margin has declined for three quarters in a row."
+      },
+      {
+        "question": "NRR dropped from 118% in Q1 to 109% in Q3, and GRR slipped to 91%. When did management first see this in the cohort data, and why was it not reflected in the Q2 and Q3 plans? What is the cause: churn, downgrades or weaker expansion?",
+        "signal_ids": [
+          "NRR_DECLINE",
+          "FORECAST_MISS"
+        ],
+        "why_they_ask": "He is testing whether management saw the retention deterioration coming and whether the forecasting process can detect it early.",
+        "answer_outline": [
+          "Headline: retention weakened faster than we planned for, and here is the specific cause and when we first saw it.",
+          "Evidence: NRR went from 118% to 109% in two quarters (113% in Q2), and GRR is 91%, down 1 pt from a year ago.",
+          "Action: add retention leading indicators to the forecast, run a targeted account review of the at-risk base, and state what NRR we are planning for next quarter."
+        ],
+        "trap_to_avoid": "Giving a cause such as churn in one segment without cohort evidence, or saying the decline was unforeseeable when it has run for several quarters."
+      },
+      {
+        "question": "Enterprise logos grew from 30 to 42 this year, up 40%, yet net new ARR is below plan and NRR is falling. What are enterprise customers contributing to ARR and retention, and are they costing us margin through hosting and delivery? Convince me this growth is quality growth and not volume.",
+        "signal_ids": [
+          "ENTERPRISE_LOGOS",
+          "NRR_DECLINE",
+          "GROSS_MARGIN"
+        ],
+        "why_they_ask": "He will accept the positive story only if it holds up against the margin and retention data and is not a headline number hiding weak economics.",
+        "answer_outline": [
+          "Headline: enterprise is the part of the plan that is working, and we can show it is healthy and not just logo count.",
+          "Evidence: logos rose from 30 to 42 (+40%), with 3 added in the last quarter alone; set that against NRR at 109% and gross margin at 72.8%.",
+          "Action: report enterprise retention, expansion and margin as a separate cohort from next quarter, and say whether the Q4 plan leans more on enterprise."
+        ],
+        "trap_to_avoid": "Celebrating the logo count without tying it to ARR, retention or margin, which invites the question of why the overall numbers are weakening."
+      },
+      {
+        "question": "Net burn was $6.03M against a $5.38M budget, 12.1% over, with the burn multiple at 2.1x and runway at 17 months. Operating expenses landed exactly on budget, so the overage is revenue and cost of revenue. What runway is the plan built on, and what is the trigger at which you cut spend or start a financing conversation?",
+        "signal_ids": [
+          "RUNWAY",
+          "BURN_MULTIPLE"
+        ],
+        "why_they_ask": "As audit chair he wants to know whether the runway figure is reliable and whether management has pre-agreed decision points instead of reacting later.",
+        "answer_outline": [
+          "Headline: the burn overage came from gross profit, not opex discipline, and runway is 17 months on current burn.",
+          "Evidence: net burn is $0.65M over budget, revenue is $11.64M vs $12.0M budget, burn multiple is 2.1x (above the 2x red line), and runway was 22 months in Q1.",
+          "Action: present the runway under base and downside cases, and name a specific runway or burn multiple level that triggers spend reductions or a funding process."
+        ],
+        "trap_to_avoid": "Quoting runway as comfortable at current burn without a downside case, when burn has been over budget and the plan has missed two quarters in a row."
+      }
+    ],
+    "created": "2026-11-10T14:52:46+00:00"
+  },
+  "questions/cash_investor:110d7f593137a362": {
+    "task": "questions/cash_investor",
+    "model": "claude-sonnet-5-5",
+    "output": [
+      {
+        "question": "Burn multiple is 2.1x, up from 1.5x a year ago, and runway is 17 months. When do you start the raise, and on what story?",
+        "signal_ids": [
+          "BURN_MULTIPLE",
+          "RUNWAY"
+        ],
+        "why_they_ask": "As the largest shareholder, he wants to know whether the company will have to raise from weakness, with efficiency worsening while cash shrinks.",
+        "answer_outline": [
+          "Headline: name the date the raise process starts and the runway you want when it starts. Don't say 'we have time'.",
+          "Evidence: burn multiple is 2.1x against 1.5x a year ago, and runway has fallen from 22 months in Q1 2026 to 17 months. Net burn is steady at about $6.0M a quarter, so the efficiency problem is on the new ARR side.",
+          "Action: present the plan to the board with two paths, raise on the current story or cut burn first, and the runway level at which you switch from one to the other."
+        ],
+        "trap_to_avoid": "Saying runway is still comfortable at 17 months, when it is already past the 18-month caution line and falling."
+      },
+      {
+        "question": "Net new ARR was $2.87M against a $3.8M plan, after a miss in Q2 as well. Next-quarter pipeline is 2.4x against a 3x target. What shows a recovery before runway gets short?",
+        "signal_ids": [
+          "FORECAST_MISS",
+          "PIPELINE_COVERAGE",
+          "RUNWAY"
+        ],
+        "why_they_ask": "He is checking whether the company can show a credible turnaround before the cash clock forces a raise on bad numbers.",
+        "answer_outline": [
+          "Headline: the plan has missed by more than 10% two quarters running. Say so, then give the specific proof points that would show recovery and by when.",
+          "Evidence: Q2 came in at $3.1M against a $3.9M plan, and Q3 at $2.87M against $3.8M. Pipeline coverage is 2.4x against a 3x target, so Q4 is not covered either.",
+          "Action: reset the plan to what the current pipeline supports. Name the pipeline and bookings milestones you will report to the board each month, and the point at which you act on costs if they are missed."
+        ],
+        "trap_to_avoid": "Defending the current plan or blaming deal timing when the same miss has now happened two quarters running."
+      },
+      {
+        "question": "Which specific levers cut burn without hurting the growth story? Net burn is $6.03M a quarter and gross margin has dropped 3 points to 72.8%. Give me the dollar impact of each.",
+        "signal_ids": [
+          "BURN_MULTIPLE",
+          "GROSS_MARGIN"
+        ],
+        "why_they_ask": "He wants a ranked list of burn levers with the growth cost of each, not a general promise to be efficient.",
+        "answer_outline": [
+          "Headline: split the levers into those that protect growth, such as gross margin and spend that isn't producing pipeline, and those that don't. Say which you would pull first.",
+          "Evidence: gross margin is 72.8% against 75.8% a year ago, so part of the burn problem is cost of delivery and not only opex. Net burn is $6.03M and burn multiple is 2.1x.",
+          "Action: bring a lever-by-lever plan with an owner, a timeline and the effect on burn multiple. Only quote dollar savings that finance has signed off."
+        ],
+        "trap_to_avoid": "Offering a across-the-board cost cut, or a gross margin explanation you haven't traced to its cause."
+      },
+      {
+        "question": "NRR has fallen from 118% to 109% in two quarters. How much of the weaker burn multiple comes from that, and what are you doing about it?",
+        "signal_ids": [
+          "NRR_DECLINE",
+          "BURN_MULTIPLE"
+        ],
+        "why_they_ask": "He sees falling retention as the thing that will undermine a fundraising story built on efficient growth.",
+        "answer_outline": [
+          "Headline: retention is now a direct drag on efficiency and on the raise. Say whether the drop comes from churn, contraction or weaker expansion, and which cohorts.",
+          "Evidence: NRR is 109% against 118% in Q1 2026. Gross retention is 91%, close to the 90% caution line. Don't offer a split between causes unless you have it.",
+          "Action: name the retention actions, their owners and the NRR level you expect to report next quarter. Commit to a date for the cohort analysis if it isn't done."
+        ],
+        "trap_to_avoid": "Calling the NRR decline a macro issue when you can't show it affects every cohort and segment."
+      },
+      {
+        "question": "Enterprise logos are up 40% to 42. Is that growth efficient enough to anchor the raise, or is it being bought at a burn multiple of 2.1x?",
+        "signal_ids": [
+          "ENTERPRISE_LOGOS",
+          "BURN_MULTIPLE"
+        ],
+        "why_they_ask": "He wants to know whether there is a real positive to build the raise around, or whether enterprise growth is adding cost faster than it adds durable ARR.",
+        "answer_outline": [
+          "Headline: enterprise is the strongest evidence for the story, and you should say so, but be clear about what it still has to prove.",
+          "Evidence: enterprise logos went from 30 to 42 year over year, ARR is $48.0M, up 39.4%. Be honest that CAC payback has lengthened to 22 months from 18 a year ago and burn multiple is 2.1x.",
+          "Action: tell the board which enterprise metrics you will show investors to prove efficiency, such as retention and payback by segment, and where you will put spend if enterprise is the focus."
+        ],
+        "trap_to_avoid": "Presenting logo growth as proof of efficiency while skipping the longer payback and weaker retention."
+      }
+    ],
+    "created": "2026-11-10T14:52:44+00:00"
+  }
+}

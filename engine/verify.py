@@ -93,7 +93,9 @@ _N = r"(\d|two|three|four|five|six|seven|eight)"
 # Claims about runs of quarters ("four straight quarters", "each of the last 3 quarters").
 STREAK_RE = re.compile(rf"\beach of the (?:last|past) {_N} quarters\b|\b{_N} (?:straight|consecutive) quarters\b"
                        rf"|\b{_N} quarters (?:in a row|running|straight)\b", re.I)
-SENTENCE_RE = re.compile(r"(?<=[.!?;])\s+(?=[A-Z$\d])|\n+")
+# Sentences end at . ! ? before a capital/number; clauses also end at any semicolon.
+SENTENCE_RE = re.compile(r"(?<=[.!?])\s+(?=[A-Z$\d])|;\s*|\n+")
+AFTER_WINDOW = 25   # a metric named after a figure counts only if it is right next to it
 
 
 @dataclass
@@ -283,7 +285,8 @@ def verify_text(text: str, allowed: list[Allowed]) -> Verification:
             # Families mentioned in this sentence: the nearest ones *before* the figure
             # first ("NRR fell to 109%"), then those after it ("$34.17M of cash").
             before = sorted((mm for mm in mentions if mm[1] <= fig.start), key=lambda mm: fig.start - mm[1])
-            after = sorted((mm for mm in mentions if mm[0] >= fig.end), key=lambda mm: mm[0] - fig.end)
+            after = sorted((mm for mm in mentions if fig.end <= mm[0] <= fig.end + AFTER_WINDOW),
+                           key=lambda mm: mm[0] - fig.end)   # "40% logo growth", not a later clause
             families = []
             for mm in before + after:
                 if mm[2] not in families:

@@ -11,6 +11,11 @@ from engine.signals import evaluate
 FIXTURES = Path(__file__).parent / "fixtures"
 
 
+def _between(text, start, end):
+    i = text.index(start) + len(start)
+    return json.loads(text[i:text.index(end, i)])
+
+
 class FakeClient:
     """Stands in for the Anthropic API: answers each persona from the fixture file."""
     model = "fake-model"
@@ -24,9 +29,34 @@ class FakeClient:
         self.calls.append(user)
         if self.broken_first and len(self.calls) == 1:
             return "Sure! Here are the questions you asked for: {oops"
+        if "summarize how peer CFOs" in user:
+            return json.dumps(self.consensus_reply(_between(user, "INPUT\n", "\n\nOUTPUT")))
+        if "draft a short\nquestion the CFO could post" in user:
+            return json.dumps(self.draft_reply(_between(user, "ANONYMOUS_FACTS (computed by code)\n", "\n\nQUESTIONS"),
+                                               _between(user, "QUESTIONS\n", "\n\nOUTPUT")))
         persona = next(pid for pid in ("growth_vc", "independent_director", "cash_investor")
                        if re.search(rf"\[{pid}\]|^{self._name(pid)}", user, re.M))
         return "```json\n" + json.dumps(self.replies[persona]) + "\n```"
+
+    @staticmethod
+    def consensus_reply(payload):
+        out = []
+        for q in payload:
+            top = q["approach_counts"]["approaches"][0]
+            t0 = q["threads"][0]["thread_id"]
+            out.append({"q_id": q["q_id"], "headline": f"Most peers {top['label']}.",
+                        "points": [{"text": f"{top['replies']} of {top['of']} replies {top['label']}.",
+                                    "thread_ids": top["thread_ids"]},
+                                   {"text": "One peer tied it to a dated plan.", "thread_ids": [t0]}],
+                        "split": None, "stage_note": None})
+        return {"summaries": out}
+
+    @staticmethod
+    def draft_reply(anon, payload):
+        return {"drafts": [{"q_id": q["q_id"], "title": "How did you prove enterprise growth was quality growth?",
+                            "question": f"We're a {anon['stage']} {anon['company']} company at {anon['arr_band']} "
+                                        f"with {anon['nrr_pct']}. How did you show the board it was repeatable?"}
+                           for q in payload]}
 
     @staticmethod
     def _name(pid):

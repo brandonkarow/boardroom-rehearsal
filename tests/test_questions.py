@@ -138,3 +138,14 @@ def test_one_persona_crashing_does_not_take_down_the_rest(tmp_path, pack, report
     cands, errors = generate_candidates(llm, pack, report, bva)
     assert len(errors) == 1 and "Independent Director" in errors[0] and "RuntimeError" in errors[0]
     assert {c.persona_id for c in cands} == {"growth_vc", "cash_investor"}
+
+
+def test_export_contains_only_one_runs_outputs(tmp_path, pack, report, bva):
+    import json
+    cache = DemoCache(tmp_path / "c.json")
+    cache.put("questions/growth_vc:old", "questions/growth_vc", [{"q": "stale"}], "m", run_id="earlier")
+    llm = LLM(client=FakeClient(), cache=cache)
+    generate_candidates(llm, pack, report, bva)
+    exported = json.loads(cache.export(llm.run_id))
+    assert len(exported) == 3 and "questions/growth_vc:old" not in exported
+    assert cache.count(llm.run_id) == 3
