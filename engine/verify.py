@@ -82,7 +82,16 @@ TIME_WORDS = re.compile(r"^\s*(?:straight\s+|consecutive\s+)?(quarters?|years?|w
 # A threshold is only a legitimate figure when the text calls it one.
 REFERENCE_WORDS = re.compile(r"(target|threshold|below|under|above|over|line|floor|ceiling|limit|"
                              r"alert|back to|back under|back above|less than|more than|at least|"
-                             r"get to|bring it to|inside)\W+(?:\w+\W+){0,2}$", re.I)
+                             r"get to|bring it to|inside|beyond|past|exceed\w*|cross\w*|breach\w*)"
+                             r"\W+(?:\w+\W+){0,3}$", re.I)
+# ...or the words right after it name it as a reference point ("an 18-month line", "a 3x target").
+REFERENCE_AFTER = re.compile(r"^\W*(?:[\w-]+\W+){0,3}?(target|threshold|line|floor|ceiling|limit|bar|"
+                             r"trigger|benchmark|alert)\b", re.I)
+NUMBER_WORDS = {"two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8}
+_N = r"(\d|two|three|four|five|six|seven|eight)"
+# Claims about runs of quarters ("four straight quarters", "each of the last 3 quarters").
+STREAK_RE = re.compile(rf"\beach of the (?:last|past) {_N} quarters\b|\b{_N} (?:straight|consecutive) quarters\b"
+                       rf"|\b{_N} quarters (?:in a row|running|straight)\b", re.I)
 SENTENCE_RE = re.compile(r"(?<=[.!?;])\s+(?=[A-Z$\d])|\n+")
 
 
@@ -103,6 +112,7 @@ class Check:
     ok: bool
     source: str = ""
     family: str | None = None
+    context: str = ""
 
 
 @dataclass
@@ -157,6 +167,13 @@ def allowed_numbers(pack: KPIPack, report: SignalReport, bva: pd.DataFrame | Non
                 cat = metric_cat
             add(v, cat, fam, f"{f.id}.{k}")
 
+    for _, t in trends(pack).iterrows():           # runs of quarters, e.g. margin down 3 in a row
+        if t.get("streak"):
+            add(abs(t["streak"]), "streak", FAMILY[t["metric"]], f"{t['name']} streak ({int(t['streak']):+d} quarters)")
+    for f in report.flags:
+        if "count" in f.numbers:
+            add(f.numbers["count"], "streak", FAMILY.get(f.metric, f.metric), f"{f.id}.count")
+
     if bva is not None:
         for _, r in bva.iterrows():
             fam = FAMILY.get(r["line_item"], "other")
@@ -205,6 +222,7 @@ class Figure:
     start: int
     end: int
     before: str        # text just before the figure (for threshold references)
+    after: str = ""    # text just after it
 
 
 def extract(text: str) -> list[tuple[str, float, str | None, int]]:
@@ -225,7 +243,7 @@ def _figures(text: str) -> list[Figure]:
         if cat is None and decimals == 0 and abs(value) <= 12 and TIME_WORDS.match(clean[m.end():]):
             continue  # "two quarters", "3 bullets": counts of things, not figures
         found.append(Figure(m.group(0).strip(), value, cat, decimals, m.start(), m.end(),
-                            clean[max(0, m.start() - 40):m.start()]))
+                            clean[max(0, m.start() - 40):m.start()], clean[m.end():m.end() + 40]))
     return found
 
 
@@ -238,8 +256,12 @@ def _close(fig: Figure, a: Allowed) -> bool:
     return abs(v - av) <= 0.5 * 10 ** (-fig.decimals) + 1e-9
 
 
+def _referenced(fig: Figure) -> bool:
+    return bool(REFERENCE_WORDS.search(fig.before) or REFERENCE_AFTER.search(fig.after))
+
+
 def _match_in(fig: Figure, pool: list[Allowed]) -> Allowed | None:
-    referenced = bool(REFERENCE_WORDS.search(fig.before))
+    referenced = _referenced(fig)
     for a in pool:
         if a.threshold and not referenced:
             continue
@@ -273,11 +295,27 @@ def verify_text(text: str, allowed: list[Allowed]) -> Verification:
                     break
             if family is None:                   # no metric named for this kind of figure
                 hit = _match_in(fig, [a for a in allowed if _compatible(fig, a)])
+            if hit is None and _referenced(fig):  # "two misses beyond 10%": a rule's own line
+                hit = _match_in(fig, [a for a in allowed if a.threshold and _compatible(fig, a)])
             res.checks.append(Check(
                 text=fig.raw, value=fig.value, cat=fig.cat, ok=hit is not None, family=family,
                 source=hit.source if hit else
                 (f"no computed {family.replace('_', ' ')} figure matches" if family
-                 else "no matching computed figure")))
+                 else "no matching computed figure"), context=sentence.strip()))
+        for m in STREAK_RE.finditer(sentence):
+            word = next(g for g in m.groups() if g).lower()
+            n = int(word) if word.isdigit() else NUMBER_WORDS[word]
+            before = sorted((mm for mm in mentions if mm[1] <= m.start()), key=lambda mm: m.start() - mm[1])
+            after = sorted((mm for mm in mentions if mm[0] >= m.end()), key=lambda mm: mm[0] - m.end())
+            fams = [mm[2] for mm in before + after]
+            fam = fams[0] if fams else None
+            pool = [a for a in allowed if a.cat == "streak" and (fam is None or a.family == fam)]
+            hit = next((a for a in pool if a.value == n), None)
+            res.checks.append(Check(
+                text=m.group(0), value=n, cat="streak", ok=hit is not None, family=fam,
+                source=hit.source if hit else
+                (f"code counts no run of {n} quarters for {fam.replace('_', ' ')}" if fam
+                 else f"code counts no run of {n} quarters"), context=sentence.strip()))
     return res
 
 

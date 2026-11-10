@@ -53,7 +53,7 @@ def test_retry_once_on_bad_json(tmp_path, pack, report, bva):
     llm = LLM(client=client, cache=DemoCache(tmp_path / "c.json"))
     cands, errors = generate_candidates(llm, pack, report, bva)
     assert errors == [] and len(client.calls) == 4             # 3 personas + 1 retry
-    assert "could not be used" in client.calls[1]
+    assert sum("could not be used" in c for c in client.calls) == 1   # calls run in parallel
 
 
 def test_two_bad_replies_give_a_friendly_error():
@@ -90,3 +90,12 @@ def test_demo_mode_without_cache_says_so(tmp_path, pack, report, bva):
     llm.mode = "demo"
     cands, errors = generate_candidates(llm, pack, report, bva)
     assert cands == [] and len(errors) == 3 and "Northbeam sample" in errors[0]
+
+
+def test_one_positive_story_question_and_persona_fit_wins(fake_llm, pack, report, bva):
+    cands, _ = generate_candidates(fake_llm, pack, report, bva)
+    top = rank(cands, report)
+    positive_led = [q for q in top if q.signal_ids[0] == "ENTERPRISE_LOGOS"]
+    assert len(positive_led) == 1
+    # ENTERPRISE_LOGOS is in the Growth VC's lane, so her version beats the Cash Investor's.
+    assert positive_led[0].persona_id == "growth_vc"

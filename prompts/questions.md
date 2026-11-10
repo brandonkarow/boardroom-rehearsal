@@ -12,6 +12,8 @@ For each question:
   1) the headline, 2) the evidence (numbers from the data), 3) the action or decision.
 - trap_to_avoid: one sentence on the answer that would hurt the CFO's credibility
   (e.g. blaming the market when the data points elsewhere).
+Stay in your lane: most of your questions should come from what PERSONA "cares most
+about"; ask at most one question outside it. Another board member covers the rest.
 Cover different signals; don't ask the same thing twice. If SIGNALS has a positive
 signal that fits this persona, include one question that lets the CFO tell that story.
 Numbers: use only figures that appear in the data below. Do not compute new ones.

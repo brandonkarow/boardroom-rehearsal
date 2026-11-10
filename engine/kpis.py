@@ -165,11 +165,32 @@ TREND_METRICS = ["arr_m", "net_new_arr_m", "revenue_m", "nrr_pct", "grr_pct",
                  "headcount", "enterprise_logos"]
 
 
+def streak(series: pd.Series) -> int:
+    """Consecutive latest quarter-over-quarter moves in one direction.
+
+    +3 = up three quarters in a row, -3 = down three in a row, 0 = flat last quarter.
+    A flat quarter ends a streak.
+    """
+    vals = [float(v) for v in series.dropna()]
+    if len(vals) < 2:
+        return 0
+    direction = (vals[-1] > vals[-2]) - (vals[-1] < vals[-2])
+    if direction == 0:
+        return 0
+    n = 0
+    for a, b in zip(reversed(vals[:-1]), reversed(vals[1:])):
+        if ((b > a) - (b < a)) != direction:
+            break
+        n += 1
+    return n * direction
+
+
 def trends(pack: KPIPack) -> pd.DataFrame:
     """Latest quarter vs prior quarter and vs a year earlier, for each metric.
 
     For % metrics the change is in points; for the rest it is an absolute change
-    plus a % change. These are the only "derived" numbers the AI may quote.
+    plus a % change. `streak` counts consecutive quarters moving the same way.
+    These are the only "derived" numbers the AI may quote.
     """
     df = pack.df
     rows = []
@@ -186,6 +207,7 @@ def trends(pack: KPIPack) -> pd.DataFrame:
                 row[f"{label}_change"] = round(cur - prev, 2)
                 if unit != "%" and prev:
                     row[f"{label}_change_pct"] = round((cur / prev - 1) * 100, 1)
+        row["streak"] = streak(df[m])
         rows.append(row)
     return pd.DataFrame(rows)
 

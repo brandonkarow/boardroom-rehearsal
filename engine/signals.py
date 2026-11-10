@@ -63,6 +63,11 @@ def fmt(value: float | None, unit: str = "") -> str:
     return "0" if s in ("-0", "") else s
 
 
+def with_unit(value: float, unit: str) -> str:
+    """'2x', '18 months', '-5 pts', '25%'."""
+    return fmt(value, unit) + (unit if unit in ("x", "%") else f" {unit}")
+
+
 def _signed(value: float, unit: str) -> str:
     s = fmt(value, unit)
     return s if s.startswith("-") or s == "0" else "+" + s
@@ -143,7 +148,7 @@ def _rule_change(df, rule):
     for sev in ("red", "amber"):
         limit = rule[sev]
         if bad <= limit:
-            return sev, ctx, f"{sev}: change of {fmt(limit, rule['unit'])} {rule['unit']} or worse over {rule['lookback']} quarters"
+            return sev, ctx, f"{sev}: change of {with_unit(limit, rule['unit'])} or worse over {rule['lookback']} quarters"
     return None
 
 
@@ -159,7 +164,7 @@ def _rule_level(df, rule):
         limit = rule[sev]
         if (cur >= limit) if up_bad else (cur < limit):
             word = "at or above" if up_bad else "below"
-            return sev, ctx, f"{sev}: {word} {fmt(limit, rule['unit'])} {rule['unit']}"
+            return sev, ctx, f"{sev}: {word} {with_unit(limit, rule['unit'])}"
     return None
 
 

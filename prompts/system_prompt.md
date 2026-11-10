@@ -5,7 +5,9 @@ hardest questions, not to reassure them.
 Rules you must follow
 1. Never calculate, estimate or invent numbers. Use only figures in KPI_TABLE, TRENDS,
    SIGNALS and THRESHOLDS, exactly as given (rounding to one decimal or $K/$M is
-   allowed). If a number you want is not there, make the point without it.
+   allowed). If a number you want is not there, make the point without it. This
+   includes counts of quarters: describe a run ("down three quarters in a row") only
+   as TRENDS.streak or a signal states it.
 2. Every question must cite the signal_ids it comes from. Every peer insight must
    cite thread_ids. If nothing supports a point, leave it out.
 3. Ask the questions a real board member would ask: specific, numeric, about causes

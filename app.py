@@ -18,6 +18,11 @@ SEVERITY_BADGE = {"red": "🔴 Red", "amber": "🟠 Amber", "positive": "🟢 Po
 st.set_page_config(page_title="Boardroom Rehearsal", page_icon="📋", layout="wide")
 
 
+def esc(text: str) -> str:
+    """Streamlit markdown reads $...$ as a math formula; show dollar signs literally."""
+    return str(text).replace("$", r"\$")
+
+
 @st.cache_resource
 def get_llm() -> LLM:
     return LLM()
@@ -61,7 +66,7 @@ if pack is None:
 
 report = evaluate(pack)
 for issue in pack.issues:
-    st.warning(issue)
+    st.warning(esc(issue))
 
 # ---- 1. Risk signals --------------------------------------------------------------
 st.subheader(f"1 · Risk signals for {pack.quarter}")
@@ -71,13 +76,13 @@ if not report.flags:
 for f in report.flags:
     c1, c2 = st.columns([1, 5])
     c1.markdown(f"**{SEVERITY_BADGE[f.severity]}**")
-    c2.markdown(f"**{f.label}** `{f.id}`  \n{f.description}  \n"
+    c2.markdown(f"**{f.label}** `{f.id}`  \n{esc(f.description)}  \n"
                 f"<span style='color:gray;font-size:0.85em'>Rule: {f.threshold}</span>",
                 unsafe_allow_html=True)
 if report.skipped:
     with st.expander("Rules that couldn't run on this data"):
         for s in report.skipped:
-            st.write("• " + s)
+            st.write("• " + esc(s))
 with st.expander("KPI table"):
     st.dataframe(pack.df.rename(columns={k: f"{v[0]} ({v[1]})" for k, v in METRIC_INFO.items()}),
                  hide_index=True, use_container_width=True)
@@ -94,7 +99,7 @@ if result is None:
     st.stop()
 
 for e in result.errors:
-    st.warning(e)
+    st.warning(esc(e))
 
 if result.top:
     n_checked = len(result.verification.checks)
@@ -105,22 +110,23 @@ if result.top:
 
 flags = report.by_id()
 for q in result.top:
-    with st.expander(f"**{q.rank}. {q.persona_name}** — {q.question}"):
-        st.markdown(f"**Why they'll ask:** {q.why_they_ask}")
+    with st.expander(f"**{q.rank}. {q.persona_name}** — {esc(q.question)}"):
+        st.markdown(f"**Why they'll ask:** {esc(q.why_they_ask)}")
         st.markdown("**The data behind it** (computed in code):")
         for sid in q.signal_ids:
             f = flags[sid]
-            st.markdown(f"- {SEVERITY_BADGE[f.severity]} `{sid}` {f.description}")
+            st.markdown(f"- {SEVERITY_BADGE[f.severity]} `{sid}` {esc(f.description)}")
         st.markdown("**Answer outline:**")
         for label, bullet in zip(("Headline", "Evidence", "Action"), q.answer_outline):
-            st.markdown(f"- *{label}:* {re.sub(rf'^{label}\s*:\s*', '', bullet, flags=re.I)}")
-        st.markdown(f"**Trap to avoid:** {q.trap_to_avoid}")
+            st.markdown(f"- *{label}:* {esc(re.sub(rf'^{label}\s*:\s*', '', bullet, flags=re.I))}")
+        st.markdown(f"**Trap to avoid:** {esc(q.trap_to_avoid)}")
         v = q.extra["verification"]
-        st.caption("Figures checked: " + (", ".join(f"{c.text} ✓" for c in v.checks) or "none"))
+        st.caption(esc("Figures checked: " + (", ".join(f"{c.text} ✓" for c in v.checks) or "none")))
 
 if result.held_back:
     with st.expander(f"Held back by the verifier ({len(result.held_back)})"):
         st.caption("These candidates quoted a figure that isn't in the KPI table, so they were not shown above.")
         for q in result.held_back:
-            bad = ", ".join(f"{c.text} ({c.source})" for c in q.extra["verification"].mismatches)
-            st.markdown(f"- *{q.persona_name}:* {q.question}  \n  **Unverified:** {bad}")
+            bad = "; ".join(f"**{c.text}** in “{c.context}” ({c.source})"
+                            for c in q.extra["verification"].mismatches)
+            st.markdown(esc(f"- *{q.persona_name}:* {q.question}  \n  **Unverified:** {bad}"))

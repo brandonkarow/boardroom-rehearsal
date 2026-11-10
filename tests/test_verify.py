@@ -77,3 +77,32 @@ def test_unit_parsing():
     assert vals["9 pts"] == (9.0, "pct")
     assert vals["17 months"] == (17.0, "months")
     assert vals["42"] == (42.0, None)
+
+
+# Phrasings from the first live run (2026-11-10) that were wrongly held back.
+@pytest.mark.parametrize("text", [
+    "17 months of runway puts you inside the board's 18-month comfort line.",
+    "Runway is 17 months against an 18-month threshold.",
+    "Two consecutive misses beyond 10% point to a structural gap, and pipeline coverage is 2.4x.",
+    "Coverage of 2.4x and two misses of more than 10% in a row.",
+    "Enterprise logos grew 40%, well above the 25% bar the board uses.",
+    "Logo growth of 40% clears the 25% positive threshold.",
+])
+def test_live_run_false_positives_now_pass(text, allowed):
+    v = verify_text(text, allowed)
+    assert v.ok, [(c.text, c.source) for c in v.mismatches]
+
+
+def test_thresholds_still_need_to_be_named_as_such(allowed):
+    assert not verify_text("Runway is 18 months.", allowed).ok
+    assert not verify_text("Logos grew 25% this year.", allowed).ok
+
+
+def test_streak_claims_are_checked_against_code(allowed):
+    # Live run: "Margin has fallen in each of the last four quarters" (it was three; Q4 2025 was flat).
+    bad = verify_text("Margin has fallen in each of the last four quarters.", allowed)
+    assert [c.text for c in bad.mismatches] == ["each of the last four quarters"]
+    assert verify_text("Gross margin is down three quarters in a row.", allowed).ok
+    assert verify_text("You missed plan two quarters in a row.", allowed).ok         # FORECAST_MISS count
+    assert not verify_text("Pipeline coverage fell six straight quarters.", allowed).ok   # it is 5
+    assert verify_text("Pipeline coverage fell five straight quarters.", allowed).ok

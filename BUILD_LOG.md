@@ -99,3 +99,50 @@ Running record of decisions, corrections and surprises. Times are America/New_Yo
 - **API key setup:** the key goes in a dedicated Console workspace with its own
   monthly spend limit (the default workspace can't have one), and only into
   Streamlit's Secrets box, never into this chat.
+- **Deploy failure 1 (`ModuleNotFoundError: engine`), diagnosed from the log plus a
+  read-only clone of the public repo:** dependencies installed fine (Cloud defaulted
+  to Python 3.14.10). But the web upload had flattened every file into the repo
+  root (`kpis.py`, `__init__ (1).py`, …), so no `engine/` folder existed. Fix: delete
+  and recreate the repo, re-upload from an extracted copy, and have the agent
+  verify the file tree by cloning before redeploying (with Python 3.12 and secrets
+  set this time). Also made the three empty `__init__.py` files non-empty, in case
+  the uploader skips zero-byte files.
+- **Deployed:** https://boardroom-rehearsal.streamlit.app (Phase 4 core, live mode).
+
+## 2026-11-10 — First live run (agent ran it in the browser pane)
+
+Result: green badge, 95 figures checked, but only **9** questions shown and **4 held
+back**. Read every card as a board member would. Found:
+
+- **Verifier false positives (4 held back, including the Loom's signature question**
+  "At a 2.1x burn multiple and 17 months of runway, when do you need to raise?"). The
+  model referred to thresholds the way people do ("inside the 18-month line",
+  "two misses beyond 10%", "the 25% bar"). The checker only recognized a threshold
+  when a cue word came *before* it. Fixed: cue words before or after, wider window,
+  and a referenced threshold may match any rule's line. "Runway is 18 months" still fails.
+- **A false claim with all-true numbers (card #7):** "margin has fallen in each of
+  the last four quarters". It fell for three: Q4 2025 was flat at 75.8%. The verifier
+  only checked figures, so the claim slipped through. Fixed at the root: counting
+  quarters is calculating, so code now computes a `streak` per metric (shown to the
+  model in TRENDS), and the verifier checks "N straight/consecutive quarters",
+  "N quarters in a row/running" and "each of the last N quarters" against it.
+  A test caught my own wrong expectation too: pipeline coverage has fallen *five*
+  quarters running, not four.
+- **Persona bleed:** the Growth VC asked the forecast-credibility question, the
+  Independent Director asked the burn/cut and enterprise questions. Fixed: the prompt
+  tells each persona to stay in its lane (at most one question outside it), and
+  ranking gives +0.2 when the persona asking is the one signals.yaml assigns.
+- **Two near-identical enterprise questions** (#8 and #9) both made the cut. Fixed:
+  at most one question led by a positive signal.
+- **"$" broke rendering:** Streamlit reads `$…$` as a LaTeX formula, so
+  "$0.29M over budget … ($8.47M" rendered as italic math. Fixed: dollar signs are
+  escaped in every markdown line.
+- **Speed: about 3.5 minutes** for the three persona calls, run one after another
+  with Sonnet 5.5's adaptive thinking. Too slow for a reviewer. Fixed: the three
+  personas now run in parallel (cache writes are locked).
+- **Held-back cards now show the sentence that failed**, so a reviewer can see why.
+- What was good: every figure checked out against the data; the answer outlines say
+  plainly what the data can't show ("the data here does not split expansion by
+  product, price or segment"); traps are specific (e.g. "don't blame the market when
+  GRR held").
+- 74 tests pass.

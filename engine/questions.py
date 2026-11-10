@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import re
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass, field
 
 import pandas as pd
@@ -21,7 +22,9 @@ from engine.signals import SignalReport, fmt, load_rules
 CANDIDATES_PER_PERSONA = 5
 TOP_K = 10
 MAX_PER_PERSONA = 4
-MAX_PER_PRIMARY_SIGNAL = 2    # at most two questions led by the same signal
+MAX_PER_PRIMARY_SIGNAL = 2    # at most two questions led by the same signal...
+MAX_PER_POSITIVE_SIGNAL = 1   # ...and one positive-story question per positive signal
+PERSONA_FIT_BONUS = 0.2       # the board member whose lane the signal is in asks it best
 DUP_SIMILARITY = 0.5          # TF-IDF cosine at or above this = same question
 
 
@@ -133,27 +136,38 @@ def generate_candidates(llm: LLM, pack: KPIPack, report: SignalReport,
     ctx = build_context(pack, report, bva)
     valid_ids = {f.id for f in report.flags}
     data_key = (pack.df.to_csv(index=False), [f.id for f in report.flags])
-    out, errors = [], []
-    for p in load_personas():
+    personas = load_personas()
+
+    def ask(p: Persona):
         user = template.format(persona=p.text, n=n, **ctx)
-        try:
-            items = llm.json(f"questions/{p.id}", (data_key, n), system, user,
-                             make_validator(valid_ids, p))
-        except LLMError as exc:
-            errors.append(f"{p.name}: {exc}")
-            continue
-        out += [Question(persona_id=p.id, persona_name=p.name, **q) for q in items]
+        return llm.json(f"questions/{p.id}", (data_key, n), system, user,
+                        make_validator(valid_ids, p))
+
+    # The three board members read the pack at the same time (one call each).
+    out, errors = [], []
+    with ThreadPoolExecutor(max_workers=len(personas)) as pool:
+        futures = [pool.submit(ask, p) for p in personas]
+        for p, fut in zip(personas, futures):       # keep persona order stable
+            try:
+                items = fut.result()
+            except LLMError as exc:
+                errors.append(f"{p.name}: {exc}")
+                continue
+            out += [Question(persona_id=p.id, persona_name=p.name, **q) for q in items]
     return out, errors
 
 
 # ---- Ranking ----------------------------------------------------------------
 
 def score(q: Question, report: SignalReport, weights: dict[str, float]) -> float:
-    """Severity of the question's PRIMARY (first-cited) signal, plus a small bonus
-    for connecting signals. Citing a red signal on the side must not lift a
-    positive-story question above the red ones."""
-    sev = {f.id: f.severity for f in report.flags}
-    return round(weights[sev[q.signal_ids[0]]] + 0.1 * min(len(q.signal_ids) - 1, 2), 3)
+    """Severity of the question's PRIMARY (first-cited) signal, plus small bonuses
+    for connecting signals and for asking in the persona's own lane (signals.yaml
+    persona_hint). Citing a red signal on the side must not lift a positive-story
+    question above the red ones."""
+    flags = report.by_id()
+    primary = flags[q.signal_ids[0]]
+    fit = PERSONA_FIT_BONUS if primary.persona_hint == q.persona_id else 0.0
+    return round(weights[primary.severity] + 0.1 * min(len(q.signal_ids) - 1, 2) + fit, 3)
 
 
 def rank(candidates: list[Question], report: SignalReport, k: int = TOP_K,
@@ -170,11 +184,13 @@ def rank(candidates: list[Question], report: SignalReport, k: int = TOP_K,
 
     chosen: list[int] = []
     counts: dict[str, int] = {}
+    cap = {f.id: MAX_PER_POSITIVE_SIGNAL if f.severity == "positive" else MAX_PER_PRIMARY_SIGNAL
+           for f in report.flags}
 
     def ok(i: int) -> bool:
         c = candidates[i]
         return (i not in chosen and counts.get(c.persona_id, 0) < per_persona
-                and counts.get(c.signal_ids[0], 0) < MAX_PER_PRIMARY_SIGNAL
+                and counts.get(c.signal_ids[0], 0) < cap[c.signal_ids[0]]
                 and all(sim[i, j] < DUP_SIMILARITY for j in chosen))
 
     def take(i: int) -> None:

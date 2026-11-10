@@ -11,6 +11,7 @@ import hashlib
 import json
 import os
 import re
+import threading
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Protocol
@@ -115,6 +116,7 @@ class DemoCache:
     def __init__(self, path: Path = CACHE_PATH):
         self.path = path
         self.entries: dict[str, dict] = {}
+        self._lock = threading.Lock()
         if path.exists():
             try:
                 self.entries = json.loads(path.read_text())
@@ -126,16 +128,18 @@ class DemoCache:
         return None if e is None else e["output"]
 
     def put(self, key: str, task: str, output: Any, model: str) -> None:
-        self.entries[key] = {"task": task, "model": model, "output": output,
-                             "created": datetime.now(timezone.utc).isoformat(timespec="seconds")}
-        try:  # best effort: Streamlit Cloud's disk is ephemeral; the UI offers a download
-            self.path.parent.mkdir(exist_ok=True)
-            self.path.write_text(json.dumps(self.entries, indent=2))
-        except OSError:
-            pass
+        with self._lock:   # persona calls run in parallel
+            self.entries[key] = {"task": task, "model": model, "output": output,
+                                 "created": datetime.now(timezone.utc).isoformat(timespec="seconds")}
+            try:  # best effort: Streamlit Cloud's disk is ephemeral; the UI offers a download
+                self.path.parent.mkdir(exist_ok=True)
+                self.path.write_text(json.dumps(self.entries, indent=2))
+            except OSError:
+                pass
 
     def export(self) -> str:
-        return json.dumps(self.entries, indent=2)
+        with self._lock:
+            return json.dumps(self.entries, indent=2)
 
 
 class LLM:

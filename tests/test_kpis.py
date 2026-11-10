@@ -103,3 +103,12 @@ def test_broken_arr_roll_forward_is_reported():
 def test_garbage_file():
     with pytest.raises(SchemaError):
         load_kpis(io.BytesIO(b"\x00\x01\x02 not a csv"))
+
+
+def test_streaks(sample):
+    from engine.kpis import trends
+    t = trends(sample).set_index("metric")["streak"]
+    assert t["gross_margin_pct"] == -3        # Q4 2025 was flat, so the run is three quarters
+    assert t["pipeline_coverage_x"] == -5        # 3.4x in Q2 2025, then down every quarter
+    assert t["nrr_pct"] == -2
+    assert t["enterprise_logos"] == 7
