@@ -12,6 +12,9 @@ from engine import brief, pipeline
 from engine.kpis import METRIC_INFO, SchemaError, load_budget_vs_actual, load_kpis
 from engine.llm import LLM
 from engine.peers import threads_by_id
+from engine.grill import DIMENSIONS, grill, sample_answer
+from engine.llm import LLMError, data_hash
+from engine.verify import allowed_numbers
 from engine.signals import evaluate, fmt
 
 SEVERITY_BADGE = {"red": "🔴 Red", "amber": "🟠 Amber", "positive": "🟢 Positive"}
@@ -203,8 +206,60 @@ def render_peers(q) -> None:
                     "and their answers would feed the next CFO's prep.")
 
 
+def render_grill(q) -> None:
+    st.markdown("---")
+    st.markdown("#### 🎤 Grill me")
+    st.caption(f"Answer as you would in the room. {q.persona_name} presses once, and you get coaching on "
+               "clarity, use of data and root cause. Code checks every number you use first.")
+    sample = sample_answer(q.question)
+    with st.form(key=f"grill_form_{q.rank}"):
+        answer = st.text_area("Your answer", value=sample or "", height=130, key=f"grill_answer_{q.rank}",
+                              help="Pre-filled with a sample answer written for the demo." if sample else None)
+        go = st.form_submit_button("Answer the board", type="primary")
+    if sample:
+        st.caption("Pre-filled with a sample answer written for the demo, with one deliberate mistake. "
+                   "Edit it or write your own.")
+    key = f"grill_{q.rank}_{data_hash(q.question, answer.strip())}"
+    if go:
+        ss.open_card = q.rank
+        if llm.mode == "demo" and answer.strip() != (sample or "").strip():
+            st.info("Demo mode has one saved exchange: the sample answer. To be grilled on your own words, "
+                    "choose **Live AI run** in the sidebar" + ("." if live_llm.mode == "live" else
+                    " (needs an ANTHROPIC_API_KEY)."))
+        else:
+            try:
+                with st.spinner(f"{q.persona_name} is listening…"):
+                    ss[key] = grill(llm, q, answer, pack, report, allowed)
+            except LLMError as exc:
+                st.warning(esc(str(exc)))
+    if key not in ss:
+        return
+    check, out = ss[key]
+    if check.checks:
+        if check.ok:
+            st.success(f"✅ Every figure in your answer matches the pack ({len(check.checks)} checked).")
+        for note in check.notes:
+            st.error("🔢 " + esc(note))
+    st.markdown(f"**{q.persona_name}:** “{esc(out['follow_up'])}”")
+    cols = st.columns(3)
+    for col, (k, label) in zip(cols, DIMENSIONS):
+        col.metric(label, f"{out['scores'][k]['score']}/5")
+        col.caption(esc(out["scores"][k]["why"]))
+    if out["strongest"]:
+        st.markdown(f"**What worked:** {esc(out['strongest'])}")
+    if out["fix"]:
+        st.markdown(f"**Say it differently:** {esc(out['fix'])}")
+    st.caption("Scores are the AI's coaching judgment, not computed. The number check above is code; "
+               "any figure in the feedback was checked against the pack and your answer.")
+    if llm.mode == "live":
+        with st.expander("Cache entry for demo mode (developer)"):
+            st.code(llm.cache.export(llm.run_id), language="json")
+
+
+allowed = allowed_numbers(pack, report, ss.get("bva"))
 for q in result.top:
-    with st.expander(f"**{q.rank}. {q.persona_name}** — {esc(q.question)}"):
+    with st.expander(f"**{q.rank}. {q.persona_name}** — {esc(q.question)}",
+                     expanded=ss.get("open_card") == q.rank):
         st.markdown(f"**Why they'll ask:** {esc(q.why_they_ask)}")
         st.markdown("**The data behind it** (computed in code):")
         for sid in q.signal_ids:
@@ -217,6 +272,7 @@ for q in result.top:
         v = q.extra["verification"]
         st.caption(esc("Figures checked: " + (", ".join(f"{c.text} ✓" for c in v.checks) or "none")))
         render_peers(q)
+        render_grill(q)
 
 # ---- 3. Board prep brief ------------------------------------------------------------
 if result.top:

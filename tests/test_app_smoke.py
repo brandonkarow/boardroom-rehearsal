@@ -33,6 +33,8 @@ def fake_streamlit(buttons):
     st.stop.side_effect = Stop
     st.button.side_effect = lambda label, **kw: buttons.get(label, False) and not kw.get("disabled")  # like Streamlit
     st.file_uploader.return_value = None
+    st.text_area.side_effect = lambda label, value="", **kw: value          # like Streamlit
+    st.form_submit_button.side_effect = lambda label, **kw: buttons.get(label, False)
     st.columns.side_effect = lambda spec: [MagicMock() for _ in (spec if isinstance(spec, list) else range(spec))]
     st.sidebar = MagicMock()
     return st
@@ -70,3 +72,24 @@ def test_reviewer_path_instant_demo_with_committed_cache(monkeypatch):
     result = st.session_state["result"]
     assert result.errors == [] and len(result.top) == 10 and result.verification.ok
     assert all(q.extra["peers"].summary for q in result.top)
+
+
+def _demo_cache_has_grill():
+    import json
+    from engine.llm import CACHE_PATH
+    return any(k.startswith("grill/") for k in json.loads(CACHE_PATH.read_text()))
+
+
+@pytest.mark.skipif(not _demo_cache_has_grill(), reason="saved Grill me exchange not in demo_cache yet")
+def test_grill_me_demo_replays_the_saved_exchange(monkeypatch):
+    """Demo mode, card #1, sample answer: code flags the wrong runway figure, the board
+    member's follow-up and coaching come from the saved live exchange."""
+    st = fake_streamlit({"Load Northbeam Q3 board pack": True, "Rehearse": True, "Answer the board": True})
+    monkeypatch.setitem(sys.modules, "streamlit", st)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    runpy.run_path("app.py", run_name="__main__")
+    grilled = {k: v for k, v in st.session_state.items() if k.startswith("grill_1_")}
+    assert len(grilled) == 1, list(st.session_state)
+    check, out = next(iter(grilled.values()))
+    assert check.notes == ["You said 18 months; the pack shows runway of 17 months in Q3 2026."]
+    assert out["follow_up"] and all(1 <= out["scores"][k]["score"] <= 5 for k in ("clarity", "use_of_data", "root_cause"))

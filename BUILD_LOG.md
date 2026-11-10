@@ -339,3 +339,32 @@ back**. Read every card as a board member would. Found:
   requirements.txt on every deploy. Every upload was also checked by a fresh `git clone`
   plus the full test suite.
 - 125 tests pass.
+- **Phase 7 verified live (10:47 upload):** repo identical to the build, 125 tests pass on
+  a fresh clone. Reviewer path on the public URL: "Try it in 60 seconds" prompt and
+  template download present. Load → Rehearse gives results in about 1 second, a green
+  badge (106 figures), 10 cards, 9 of 10 with close peer coverage, 1 Braintrust draft,
+  both brief downloads, and no errors.
+
+## 2026-11-10 — README in Brandon's voice, and Grill me
+
+- **README:** Brandon asked the agent to draft "The problem" and "Path to Floyd" in his
+  voice. They draw only on what he has said about himself (Gartner Conferences and
+  research; integrating Evanta; building its meeting and peer-connect capabilities). No
+  invented facts or metrics.
+- **Grill me (Brandon overrode my "skip" recommendation; built after Phase 7 as agreed).**
+  The narrow version is one card, the CFO's answer, one follow-up from that board member,
+  and 1–5 coaching on clarity, use of data and root cause. The trust twist: **code checks
+  every figure in the CFO's own answer first** ("You said 18 months; the pack shows
+  runway of 17 months in Q3 2026"). The AI must press on any mismatch. Scores are
+  labeled as the AI's judgment, and any figure in its feedback must come from the pack or
+  the answer. Demo mode replays one saved exchange on a sample answer that was written for
+  the demo, with one deliberate rounding error, the kind CFOs make under pressure.
+- **Real verifier hole found while testing it:** "runway is really 11 months" passed,
+  because runway *fell* 11 months year over year; the checker accepted a change as a level.
+  Fix: computed changes only match figures phrased as changes ("fell 11 months", "a 9-point
+  drop", "-9 pts", "added 3"). Re-ran both real-output fixtures. First pass rejected four
+  true phrasings ("added 3", "12 net new logos", "40% logo growth"); added those words.
+  Real output passes 100% again, and the hole stays closed.
+- Test correction (own): an earlier example, "runway is really 14 months", wasn't actually
+  invented. Runway was 13.8 months in Q4 2024, so the checker was right to accept it.
+- 138 tests pass (1 skipped until the saved Grill me exchange is in the demo cache).

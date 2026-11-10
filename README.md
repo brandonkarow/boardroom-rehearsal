@@ -22,12 +22,24 @@ peer CFO thread is fictional. Nothing comes from a real company, board deck or c
 
 ## The problem
 
-<!-- Brandon: rewrite this section in your own voice. -->
-The question that hurts a CFO in a board meeting is the one they didn't see coming. Board
-prep today is a deck, a few dry runs with the CEO, and the CFO's own memory of what this
-board tends to ask. What CFOs want most that week is a peer who has faced the same question
-and can say what worked. That knowledge exists in a community like The F Suite, but it
-isn't there at 11pm the night before the meeting.
+The question that hurts a CFO in a board meeting is rarely the one they prepared for. It's
+the second question, the follow-up from the independent director who noticed that the
+plan barely moved after last quarter's miss.
+
+I spent years at Gartner working on the Conferences business and on integrating Evanta,
+Gartner's C-level communities, including the meeting and peer-connect capabilities. The
+pattern I saw over and over: the most valuable thing an executive gets from a community
+isn't content. It's the moment a peer says, "I had that exact problem two years ago. Here's
+what I said, and here's what I'd do differently." That moment is worth the most the week
+before a board meeting, and it's the hardest to get. You can't call twelve CFOs at 11pm
+to ask how they explained a falling NRR.
+
+Board prep today is a deck, a few dry runs with the CEO, and the CFO's memory of what this
+board tends to ask. Boardroom Rehearsal does three things that I think CFOs actually want
+that week. It reads the numbers the way a skeptical board will. It asks the hard questions
+before the board does. And it puts what peers did next to each question. Because a CFO
+can't afford to quote a wrong number in that room, every figure is computed in code and
+checked, and every peer insight is traceable to the thread it came from.
 
 ## What it does
 
@@ -92,22 +104,25 @@ and a regression suite on real model output.
 
 ## Path to Floyd
 
-<!-- Brandon: rewrite this section in your own voice. -->
-Board prep gives Floyd a reason to be used every quarter, and it pulls members into the
-Braintrust when they need it most.
+What I learned building peer-connect at Evanta is that communities don't win on the
+number of conversations. They win when a member gets the right peer at the right moment.
+Board prep is a moment that comes back every quarter for every CFO. That makes it a
+natural habit for Floyd, and a natural way into the Braintrust.
 
-**The loop:** a member uploads the board pack → Floyd flags exposures and likely questions →
-Floyd shows how peers handled each one (real threads, with consent) → uncovered questions
-go to the Braintrust as anonymous drafts → new answers enrich the next member's prep.
+**The loop:** a member uploads the board pack → Floyd flags what the board will probe and
+the likely questions → Floyd shows how peers handled each one (real threads, with consent)
+→ questions peers haven't covered go to the Braintrust as anonymous drafts → those answers
+improve the next member's prep. Every board cycle makes the library better, and no
+competitor without a peer community can copy that.
 
 | | |
 |---|---|
-| **User** | CFOs first; their FP&A leads and Deputy CFOs, who prepare the pack, as a team-seat add-on |
-| **Positioning** | "Walk into every board meeting having already heard the hard questions, and how your peers answered them" |
-| **Launch** | 10–15 design-partner CFOs for one board cycle → an anonymized "most-asked board questions this quarter" report → chapter dinners and the summit → general release |
-| **Flywheel** | Every uncovered question becomes a Braintrust thread; every answered thread improves the next member's prep. A quarterly "top board questions by stage" report becomes a benchmark asset. |
-| **Trust** | Member financials never train models; opt-in for threads used in summaries; anonymous by default; clear retention |
-| **Measures** | Share of members using it before board meetings, Braintrust questions started from it, response rate, prep time saved, renewal of users vs non-users |
+| **Who it's for** | CFOs first. Then the FP&A leads and Deputy CFOs who actually build the pack, as team seats; that's how The F Suite grows into the finance team. |
+| **Positioning** | "Walk into every board meeting having already heard the hard questions, and how your peers answered them." |
+| **How I'd launch it** | 10–15 design-partner CFOs for one board cycle, then an anonymized "most-asked board questions this quarter" report, then showcase it at chapter dinners and the summit before general release. Starting small also tests the hardest part first: whether members will let their threads inform other members' prep. |
+| **The flywheel** | Every uncovered question becomes a Braintrust thread, and every answered thread improves the next member's prep. A quarterly "top board questions by stage" report becomes a benchmark asset in its own right. |
+| **Trust** | Member financials never train models. Threads appear in summaries only with opt-in. Escalations are anonymous by default, and retention is clear. In a CFO community, a privacy mistake would cost more than any feature is worth. |
+| **What I'd measure** | Share of members using it before board meetings; Braintrust questions started from it and their response rate; prep time saved (self-reported); and renewal rates of users vs non-users. That last one is the number that matters. |
 
 ## Repo map
 

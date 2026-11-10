@@ -153,3 +153,18 @@ def test_point_change_can_refer_to_the_cards_metric(allowed):
     # ...but only for point changes the code computed, and only for metrics the card names.
     assert not verify_text("Pointing to GRR, when a 7-point drop is the story. NRR is 109%.", allowed).ok
     assert not verify_text("GRR held, but there was a 9-point drop.", allowed).ok
+
+
+@pytest.mark.parametrize("text, ok", [
+    # Found while testing Grill me: a CHANGE was accepted as a LEVEL.
+    ("Runway is really 11 months.", False),        # runway fell 11 months YoY; it is 17
+    ("Runway fell 11 months in a year.", True),
+    ("NRR is 9%.", False),
+    ("NRR is down 9 points.", True),
+    ("ARR is 39.4%.", False),
+    ("ARR grew 39.4% year over year.", True),
+    ("Logos went from 30 to 42 and added 3 in the latest quarter.", True),
+    ("12 net new enterprise logos in a year.", True),
+])
+def test_changes_only_match_when_phrased_as_changes(text, ok, allowed):
+    assert verify_text(text, allowed).ok is ok

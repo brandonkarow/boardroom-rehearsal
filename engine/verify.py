@@ -153,7 +153,7 @@ def allowed_numbers(pack: KPIPack, report: SignalReport, bva: pd.DataFrame | Non
             if not pd.isna(t.get(f"{k}_change")):
                 add(t[f"{k}_change"], cat, fam, f"{t['name']} {k.upper()} change", delta=True)
             if not pd.isna(t.get(f"{k}_change_pct")):
-                add(t[f"{k}_change_pct"], "pct", fam, f"{t['name']} {k.upper()} % change")
+                add(t[f"{k}_change_pct"], "pct", fam, f"{t['name']} {k.upper()} % change", delta=True)
 
     for f in report.flags:
         fam = FAMILY.get(f.metric, f.metric)
@@ -264,10 +264,24 @@ def _referenced(fig: Figure) -> bool:
     return bool(REFERENCE_WORDS.search(fig.before) or REFERENCE_AFTER.search(fig.after))
 
 
+CHANGE_BEFORE = re.compile(r"(down|up|fell|fall\w*|rose|rise\w*|risen|drop\w*|grew|grow\w*|declin\w*|increas\w*|"
+                           r"decreas\w*|lost|los\w*|gain\w*|slipp?\w*|shrank|shrunk|by|swing|moved|add\w*)\W+(?:\w+\W+){0,3}$", re.I)
+CHANGE_AFTER = re.compile(r"^\W*(?:[\w-]+\W+){0,2}?(drop|decline|increase|decrease|lower|higher|less|fewer|more|"
+                          r"change|swing|gain|loss|improvement|deterioration|up|down|shorter|longer|growth|added|new|net new)\b", re.I)
+
+
+def _phrased_as_change(fig: Figure) -> bool:
+    return fig.raw.lstrip("$").startswith("-") or fig.before.rstrip().endswith("+") or bool(
+        CHANGE_BEFORE.search(fig.before) or CHANGE_AFTER.search(fig.after))
+
+
 def _match_in(fig: Figure, pool: list[Allowed]) -> Allowed | None:
     referenced = _referenced(fig)
+    as_change = _phrased_as_change(fig)
     for a in pool:
         if a.threshold and not referenced:
+            continue
+        if a.delta and not as_change:   # "runway is 11 months" must not match an 11-month drop
             continue
         if _close(fig, a):
             return a

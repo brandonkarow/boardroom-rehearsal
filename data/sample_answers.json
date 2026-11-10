@@ -1,0 +1,9 @@
+{
+ "_about": "Answers written for the demo by the build agent, so demo mode can show Grill me without a key. Clearly labeled in the app as sample answers.",
+ "samples": [
+  {
+   "question_starts_with": "At a 2.1x burn multiple and 17 months of runway",
+   "answer": "We're comfortable on timing. We have about 18 months of runway, so we plan to start the Series D process in Q2 next year. The story is enterprise: logos are up 40% year over year, and we expect efficiency to improve as those deals ramp. Burn has been flat at about $6M a quarter, so this is a growth problem, not a spending problem."
+  }
+ ]
+}
