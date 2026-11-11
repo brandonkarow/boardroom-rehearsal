@@ -82,8 +82,7 @@ checked, and every peer insight is traceable to the thread it came from.
 
 Built in one session with Claude as the coding agent, spec first
 ([`CLAUDE.md`](CLAUDE.md)), in phases with a review checkpoint after each. Decisions,
-corrections and surprises are logged in [`BUILD_LOG.md`](BUILD_LOG.md). The full agent
-chat history is in [`agent_chat_history.md`](agent_chat_history.md). A few moments worth reading in the log:
+corrections and surprises are logged in [`BUILD_LOG.md`](BUILD_LOG.md). A few moments worth reading in the log:
 
 - **The verifier was rebuilt three times on real model output.** The first version matched
   figures by value alone, so "runway 18 months" passed because 18 is a threshold.
